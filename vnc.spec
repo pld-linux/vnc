@@ -4,7 +4,7 @@ Summary(pl):	Virtual Network Computing -- zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.3r2
-Release:	5
+Release:	6
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-%{version}_unixsrc.tgz
@@ -21,6 +21,7 @@ Patch2:		%{name}-ppc.patch
 Patch3:		%{name}-ComplexProgramTargetNoMan.patch
 Patch4:		%{name}-corre.patch
 Patch5:		%{name}-typo.patch
+Patch6:		%{name}-imake.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	zlib-devel
@@ -141,6 +142,7 @@ Ten pakiet zawiera dokumentacjê do VNC (protoko³u, programów itp.).
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 rm -rf Xvnc/lib/zlib
