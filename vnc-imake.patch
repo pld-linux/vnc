@@ -1,0 +1,178 @@
+--- ./Xvnc/config/cf/Imake.cf.fred	Sun Jul 27 04:41:02 1997
++++ ./Xvnc/config/cf/Imake.cf	Wed Jan 19 07:36:39 2000
+@@ -548,9 +548,20 @@
+ #  define i386Architecture
+ #  undef i386
+ # endif /* i386 */
+-# ifdef __alpha
++# ifdef __i386__
++#  ifndef i386Architecture
++#   define i386Architecture
++#  endif
++#  undef __i386__
++# endif /* __i386__ */
++# if defined(sparc) || defined(__sparc__)
++#  define SparcArchitecture
++#  undef sparc
++#  undef __sparc__
++# endif
++# ifdef __alpha__
+ #  define AlphaArchitecture
+-#  undef __alpha
++#  undef __alpha__
+ # endif /* __alpha */
+ # ifdef mc68000
+ #  define Mc68020Architecture
+--- ./Xvnc/config/cf/linux.cf.fred	Mon May 11 18:38:06 1998
++++ ./Xvnc/config/cf/linux.cf	Wed Jan 19 07:34:08 2000
+@@ -40,7 +40,9 @@
+ 
+ /* Set some defaults for the Default* values in case imake doesn't find them */
+ #ifndef DefaultLinuxCLibMajorVersion
+-#ifdef AlphaArchitecture
++#if defined(AlphaArchitecture) || defined(PowerPCArchitecture) || \
++    defined(SparcArchitecture) || defined(ArmArchitecure) || \
++    defined(i386Architecture)
+ #define DefaultLinuxCLibMajorVersion	6
+ #else
+ #define DefaultLinuxCLibMajorVersion	5
+@@ -173,6 +175,9 @@
+ #define LdCmd			/usr/alpha-linuxecoff/bin/ld -m alpha
+ #define AsmDefines		-DUSE_GAS -U__ELF__
+ #endif /* AlphaArchitecture */
++#ifdef SparcArchitecture
++#define AsmDefines		-D__ELF__
++#endif /* SparcArchitecture */
+ #ifdef i386Architecture
+ #define CcCmd			gcc -b i486-linuxaout
+ #define CplusplusCmd		g++ -b i486-linuxaout
+@@ -197,6 +202,9 @@
+ #define AsmDefines		-D__ELF__
+ #define CplusplusCmd		c++ -b alpha-linux
+ #endif /* AlphaArchitecture */
++#ifdef SparcArchitecture
++#define AsmDefines		-D__ELF__
++#endif /* SparcArchitecture */
+ #ifdef i386Architecture
+ #define CcCmd			gcc -b i486-linux
+ #define AsCmd			/usr/i486-linux/bin/as
+@@ -258,6 +266,39 @@
+ #define ServerOSDefines		XFree86ServerOSDefines -DDDXTIME -DPART_NET
+ #define ServerExtraDefines	-DGCCUSESGAS XFree86ServerDefines
+ #endif /* Mc68020Architecture */
++
++#ifdef PowerPCArchitecture
++#define DefaultCCOptions        -fsigned-char
++#define OptimizedCDebugFlags	-O2
++#define LinuxMachineDefines 	-D__powerpc__
++#define ServerOSDefines		XFree86ServerOSDefines -DDDXTIME -DPART_NET
++#define ServerExtraDefines	-DGCCUSESGAS XFree86ServerDefines
++#endif /* PowerPCArchitecture */
++
++#ifdef ArmArchitecture
++#define DefaultCCOptions        -fsigned-char
++#define OptimizedCDebugFlags   -O2
++#define LinuxMachineDefines    -D__arm__
++#define ServerOSDefines                XFree86ServerOSDefines -DDDXTIME -DPART_NET
++#define ServerExtraDefines     -DGCCUSESGAS XFree86ServerDefines
++#endif /* Arm */
++
++#ifdef SparcArchitecture
++#define OptimizedCDebugFlags	-O2
++#define LinuxMachineDefines 	-D__sparc__
++#define ServerOSDefines		-DDDXOSINIT
++#define ServerExtraDefines	-DGCCUSESGAS XFree86ServerDefines
++#define AsVISOption		-Av9a
++#ifdef Sparc64Architecture
++#define AsOutputArchSize	64
++#else
++#define AsOutputArchSize	32
++#endif
++#if LinuxCLibMajorVersion <= 5
++/* Why we lack this when everybody else has it? */
++#define HasCbrt NO
++#endif
++#endif /* SparcArchitecture */
+ 
+ /*================================================================
+    BEGIN ORL VNC modification
+--- ./Xvnc/config/cf/vnc.def.fred	Fri Aug 13 13:20:41 1999
++++ ./Xvnc/config/cf/vnc.def	Wed Jan 19 07:34:08 2000
+@@ -117,7 +117,7 @@
+ #ifdef SunArchitecture
+ #define ProjectRoot /usr/openwin
+ #else
+-#ifdef i386Architecture
++#ifdef LinuxArchitecture
+ #define ProjectRoot /usr/X11R6
+ #endif
+ #endif
+--- ./Xvnc/config/imake/imakemdep.h.fred	Sun Jul 27 04:41:05 1997
++++ ./Xvnc/config/imake/imakemdep.h	Wed Jan 19 07:34:08 2000
+@@ -294,9 +294,15 @@
+ #ifdef unix
+ 	"-Uunix",	/* remove unix symbol so that filename unix.c okay */
+ #endif
+-#if defined(__386BSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(MACH)
++#if defined(__386BSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(MACH) || defined(linux) || defined(__GNU__)
+ # ifdef __i386__
+ 	"-D__i386__",
++# endif
++# ifdef __sparc__
++	"-D__sparc__",
++# endif
++# ifdef __alpha__
++       "-D__alpha__",
+ # endif
+ # ifdef __GNUC__
+ 	"-traditional",
+--- ./Xvnc/programs/Xserver/cfb/Imakefile.fred	Sat May  3 11:45:03 1997
++++ ./Xvnc/programs/Xserver/cfb/Imakefile	Wed Jan 19 07:34:08 2000
+@@ -205,10 +205,10 @@
+ 	$(RM) stipsparcte.s
+ 
+ stipsparc.o: stipsparc.s
+-	$(CPP) stipsparc.s | $(AS) -o $@ -
++	$(CPP) AsmDefines stipsparc.s | $(AS) -o $@ -
+ 
+ stipsparcte.o: stipsparcte.s
+-	$(CPP) -DTETEXT stipsparcte.s | $(AS) -o $@ -
++	$(CPP) AsmDefines -DTETEXT stipsparcte.s | $(AS) -o $@ -
+ #endif
+ #endif
+ 
+@@ -221,10 +221,10 @@
+ 	$(RM) stipsprcte32.s
+ 
+ stipsprc32.o: stipsprc32.s
+-	$(CPP) stipsprc32.s | $(AS) -o $@ -
++	$(CPP) AsmDefines stipsprc32.s | $(AS) -o $@ -
+ 
+ stipsprcte32.o: stipsprcte32.s
+-	$(CPP) -DTETEXT stipsprcte32.s | $(AS) -o $@ -
++	$(CPP) AsmDefines -DTETEXT stipsprcte32.s | $(AS) -o $@ -
+ #endif
+ #endif
+ 
+--- ./Xvnc/programs/Xserver/cfb/stipsparc.s.fred	Wed Apr 27 09:14:23 1994
++++ ./Xvnc/programs/Xserver/cfb/stipsparc.s	Wed Jan 19 07:34:08 2000
+@@ -85,7 +85,7 @@
+ #define ForEachBits	LY4
+ #define NextBits	LY5
+ 
+-#ifdef SVR4
++#if defined(SVR4) || ( defined(linux) && defined(__ELF__) )
+ #ifdef TETEXT
+ #define	_cfbStippleStack	cfbStippleStackTE
+ #else
+--- ./Xvnc/programs/Xserver/cfb/stipsprc32.s.fred	Wed Apr 27 09:14:23 1994
++++ ./Xvnc/programs/Xserver/cfb/stipsprc32.s	Wed Jan 19 07:34:08 2000
+@@ -81,7 +81,7 @@
+ #define ForEachBits	LY4
+ #define NextBits	LY5
+ 
+-#ifdef SVR4
++#if defined(SVR4) || ( defined(linux) && defined(__ELF__) )
+ #ifdef TETEXT
+ #define	_cfb32StippleStack	cfb32StippleStackTE
+ #else
