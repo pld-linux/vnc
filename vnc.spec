@@ -30,7 +30,7 @@ Patch4:		%{name}-svncviewer.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	zlib-devel
-%{!?_without_svgalib:BuildRequires:	svgalib}
+%{!?_without_svgalib:BuildRequires:	svgalib-devel}
 Obsoletes:	tightvnc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
