@@ -162,7 +162,9 @@ Wersja VNC dla SVGALIBa
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%ifarch sparc sparc64
 %patch6 -p1
+%endif
 
 tar xvfj %{SOURCE8}
 
