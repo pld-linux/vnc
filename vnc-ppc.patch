@@ -222,3 +222,70 @@ diff -uNr vnc-3.3.2r2.orig/Xvnc/programs/Xserver/include/servermd.h vnc-3.3.2r2/
  
  #ifdef sgi
  
+--- vnc_unixsrc/Xvnc/programs/Xserver/os/WaitFor.c~	Mon Mar  2 12:56:36 1998
++++ vnc_unixsrc/Xvnc/programs/Xserver/os/WaitFor.c	Mon Jul  1 01:04:09 2002
+@@ -57,6 +57,9 @@
+  *
+  *****************************************************************/
+ 
++
++#define _GNU_SOURCE
++
+ #ifdef WIN32
+ #include <X11/Xwinsock.h>
+ #endif
+--- vnc_unixsrc/Xvnc/programs/Xserver/os/connection.c~	Mon May 11 19:02:17 1998
++++ vnc_unixsrc/Xvnc/programs/Xserver/os/connection.c	Mon Jul  1 01:05:07 2002
+@@ -64,6 +64,8 @@
+  *
+  *****************************************************************/
+ 
++#define _GNU_SOURCE
++
+ #ifdef WIN32
+ #include <X11/Xwinsock.h>
+ #endif
+--- vnc_unixsrc/Xvnc/programs/Xserver/os/io.c~	Sat Jan 18 07:58:00 1997
++++ vnc_unixsrc/Xvnc/programs/Xserver/os/io.c	Mon Jul  1 01:05:24 2002
+@@ -55,6 +55,8 @@
+  *
+  *****************************************************************/
+ 
++#define _GNU_SOURCE
++
+ #ifdef WIN32
+ #include <X11/Xwinsock.h>
+ #endif
+--- vnc_unixsrc/Xvnc/programs/Xserver/os/xdmcp.c~	Sat Jan 18 07:58:04 1997
++++ vnc_unixsrc/Xvnc/programs/Xserver/os/xdmcp.c	Mon Jul  1 01:07:10 2002
+@@ -15,6 +15,8 @@
+  *
+  */
+ 
++#define _GNU_SOURCE
++
+ #ifdef WIN32
+ /* avoid conflicting definitions */
+ #define BOOL wBOOL
+--- vnc_unixsrc/Xvnc/lib/font/fc/fserve.c~	Wed Jun 11 14:08:41 1997
++++ vnc_unixsrc/Xvnc/lib/font/fc/fserve.c	Mon Jul  1 01:12:17 2002
+@@ -53,6 +53,8 @@
+  * font server specific font access
+  */
+ 
++#define _GNU_SOURCE
++
+ #ifdef WIN32
+ #define _WILLWINSOCK_
+ #endif
+--- vnc_unixsrc/Xvnc/lib/font/fc/fsio.c~	Mon Mar  2 12:56:50 1998
++++ vnc_unixsrc/Xvnc/lib/font/fc/fsio.c	Mon Jul  1 01:12:33 2002
+@@ -28,6 +28,8 @@
+  * font server i/o routines
+  */
+ 
++#define _GNU_SOURCE
++
+ #ifdef WIN32
+ #define _WILLWINSOCK_
+ #endif
