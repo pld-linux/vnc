@@ -76,11 +76,11 @@ Summary(es):	Sistema de control remoto
 Summary(pl):	X serwer VNC
 Summary(pt_BR):	Sistema de controle remoto
 Group:		X11/Applications/Networking
-Requires:	vnc-utils
-Requires:	xinitrc
 Requires:	XFree86-common
 Requires:	XFree86-fonts-base
 Requires:	XFree86-fonts
+Requires:	vnc-utils
+Requires:	xinitrc
 Obsoletes:	tightvnc-server
 
 %description server
