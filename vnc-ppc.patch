@@ -60,7 +60,7 @@ diff -uNr vnc-3.3.2r2.orig/Xvnc/config/cf/linux-pmac.cf vnc-3.3.2r2/Xvnc/config/
 +#endif
 +
 +#define HasNdbm			YES
-+#define DBMLibrary		-lgdbm
++#define DBMLibrary		-lgdbm -lz
 +#define UseElfFormat		YES
 +#define HasGcc			YES
 +#define HasGcc2			YES
