@@ -12,7 +12,7 @@ Summary(pl):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.7
-Release:	1
+Release:	2
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-%{version}-unixsrc.tar.gz
@@ -31,6 +31,7 @@ URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	zlib-devel
 %{!?_without_svgalib:BuildRequires:	svgalib}
+Obsoletes:	tightvnc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautocompressdoc	*.GIF
@@ -76,6 +77,7 @@ Requires:	xinitrc
 Requires:	XFree86-common
 Requires:	XFree86-fonts-base
 Requires:	XFree86-fonts
+Obsoletes:	tightvnc-server
 
 %description server
 VNC stands for Virtual Network Computing. It is, in essence, a remote
@@ -111,6 +113,7 @@ visto e usado por diversos visualizadores ao mesmo tempo.
 Summary:	Additional utilities for VNC
 Summary(pl):	Dodatkowe narzêdzia do VNC
 Group:		X11/Applications/Networking
+Obsoletes:	tightvnc-utils
 
 %description utils
 This package contains additional VNC utilities: vncconnect and
