@@ -36,13 +36,12 @@ dzia≥aj±cej po HTTP).
 
 %description -l pt_BR
 VNC (Virtual Network Computing) ' um sistema de controle remoto que
-permite visualizar um ambiente desktop n«o somente da m†quina onde
-o VNC est† rodando, mas de qualquer lugar da Internet e de uma
-variedade de arquiteturas. O VNC ' diferente de um servidor X em
-v†rios aspectos: n«o salva nenhum estado no visualizador VNC,
-' pequeno e simples, ' de fato independente de plataforma,
-e um desktop pode ser visto e usado por diversos visualizadores
-ao mesmo tempo.
+permite visualizar um ambiente desktop n«o somente da m†quina onde o
+VNC est† rodando, mas de qualquer lugar da Internet e de uma variedade
+de arquiteturas. O VNC ' diferente de um servidor X em v†rios
+aspectos: n«o salva nenhum estado no visualizador VNC, ' pequeno e
+simples, ' de fato independente de plataforma, e um desktop pode ser
+visto e usado por diversos visualizadores ao mesmo tempo.
 
 %description -l es
 Sistema de control remoto.
