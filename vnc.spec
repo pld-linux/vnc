@@ -141,10 +141,10 @@ Summary(pl):	Przegl±darka VNC dla svgaliba
 Group:		X11/Applications/Networking
 
 %description svgalib
-SVGALIB version of VNC
+SVGALIB version of VNC viewer.
 
 %description svgalib -l pl
-Wersja VNC dla SVGALIBa
+Klient VNC w wersji dla SVGALIBa.
 
 %prep
 %setup -q -n %{name}-%{version}-unixsrc -a1 -a2
