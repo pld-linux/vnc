@@ -1,7 +1,7 @@
 Summary:	Virtual Network Computing
+Summary(es):	Sistema de control remoto
 Summary(pl):	Virtual Network Computing -- zdalny desktop
-Summary(pt_BR):	Sistema de controle remoto.
-Summary(es):	Sistema de control remoto.
+Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.3r2
 Release:	2
@@ -14,11 +14,11 @@ Patch1:		%{name}-vncserver.patch
 Patch2:		%{name}-ppc.patch
 Patch3:		%{name}-ComplexProgramTargetNoMan.patch
 URL:		http://www.uk.research.att.com/vnc/
-BuildRequires:	zlib-devel
 BuildRequires:	XFree86-devel
+BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	_prefix	/usr/X11R6
+%define		_prefix		/usr/X11R6
 
 %description
 VNC stands for Virtual Network Computing. It is, in essence, a remote
@@ -26,6 +26,9 @@ display system which allows you to view a computing 'desktop'
 environment not only on the machine where it is running, but from
 anywhere on the Internet and from a wide variety of machine
 architectures.
+
+%description -l es
+Sistema de control remoto.
 
 %description -l pl
 VNC oznacza Virtual Network Computing. Pakiet ten pozwala na uzyskanie
@@ -43,13 +46,8 @@ aspectos: n«o salva nenhum estado no visualizador VNC, ' pequeno e
 simples, ' de fato independente de plataforma, e um desktop pode ser
 visto e usado por diversos visualizadores ao mesmo tempo.
 
-%description -l es
-Sistema de control remoto.
-
 %prep
-%setup -q -c -a 1
-
-cd %{name}_unixsrc
+%setup -q -n %{name}_unixsrc -a1
 %patch0 -p1
 %patch1 -p1
 %ifarch ppc
@@ -59,7 +57,6 @@ cd %{name}_unixsrc
 
 
 %build
-cd %{name}_unixsrc
 rm -rf Xvnc/lib/zlib
 
 xmkmf
@@ -71,19 +68,15 @@ cd Xvnc
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}/vnc/classes}
 
-cd %{name}_unixsrc
-
 ./vncinstall $RPM_BUILD_ROOT%{_bindir}
 
 install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
-
-gzip -9nf $RPM_BUILD_ROOT%{name}-%{version}/vnc_unixsrc/README
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc vnc_docs/*.{html,jpg,html,htm,dtd,pdf,css,GIF} vnc_unixsrc/*.gz
+%doc vnc_docs/*.{html,jpg,html,htm,dtd,pdf,css,GIF} README
 %attr(755,root,root) %{_bindir}/*
 %{_datadir}/vnc
