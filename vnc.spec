@@ -76,7 +76,7 @@ Requires:	XFree86-common
 Requires:	XFree86-fonts-base
 Requires:	XFree86-fonts
 Requires:	vnc-utils
-Requires:	xinitrc
+Requires:	xinitrc-ng
 Obsoletes:	tightvnc-server
 
 %description server
