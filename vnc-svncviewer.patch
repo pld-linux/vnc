@@ -1,0 +1,13 @@
+--- vnc-3.3.6-unixsrc/svncviewer/Imakefile~	Mon Mar 16 12:45:51 1998
++++ vnc-3.3.6-unixsrc/svncviewer/Imakefile	Mon Feb  3 00:04:53 2003
+@@ -9,8 +9,8 @@
+ 
+ SRCS = args.c rfbproto.c sockets.c svncviewer.c svga.c kbd.c
+ OBJS = args.o rfbproto.o sockets.o svncviewer.o svga.o kbd.o
+-INCLUDES = -I../include -I.
+-VNCAUTH_LIB = ../libvncauth/libvncauth.a
++INCLUDES = -I../rfb -I.
++VNCAUTH_LIB = ../rfb/librfb.a
+ SVGALIB = -lvgagl -lvga
+ 
+ all:: svncviewer
