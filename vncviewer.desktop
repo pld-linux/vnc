@@ -8,4 +8,5 @@ Icon=vnc.png
 Terminal=0
 Type=Application
 Categories=Network
+Encoding=UTF-8
 # vi: encoding=utf-8
