@@ -6,7 +6,7 @@ diff -Naur vnc.orig/vncserver vncserver
  $depth = 8;
  $desktopName = "X";
 -$vncClasses = "/usr/local/vnc/classes";
-+$vncClasses = "/usr/share/vnc/classes";
++$vncClasses = "/usr/X11R6/share/vnc/classes";
  $vncUserDir = "$ENV{HOME}/.vnc";
  $xauthorityFile = "$ENV{HOME}/.Xauthority";
  
