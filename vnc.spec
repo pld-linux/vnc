@@ -50,9 +50,9 @@ make CDEBUGFLAGS="$RPM_OPT_FLAGS" World
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/usr/X11R6/bin
-install -d $RPM_BUILD_ROOT/usr/share/vnc/classes
+install -d $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 ./vncinstall $RPM_BUILD_ROOT/usr/X11R6/bin
-install -m644 classes/* $RPM_BUILD_ROOT/usr/share/vnc/classes
+install -m644 classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 strip $RPM_BUILD_ROOT/usr/X11R6/bin/Xvnc
 strip $RPM_BUILD_ROOT/usr/X11R6/bin/vncpasswd
 strip $RPM_BUILD_ROOT/usr/X11R6/bin/vncviewer
@@ -66,7 +66,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(711,root,root) /usr/X11R6/bin/vncpasswd
 %attr(755,root,root) /usr/X11R6/bin/vncserver
 %attr(711,root,root) /usr/X11R6/bin/vncviewer
-/usr/share/vnc/classes/
+%{_datadir}/vnc/classes/
 %doc doc/
 %doc README
 
@@ -94,7 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Tue May 26 1998 Arne Coucheron <arneco@online.no>
   [3.3.2-1]
-- moved java classes to /usr/share/vnc/classes
+- moved java classes to %{_datadir}/vnc/classes
 - moved binaries to /usr/bin
 - using predefined %%{name} and %%{version}
 - using %defattr in filelist, this means that rpm 2.5 is required to build
