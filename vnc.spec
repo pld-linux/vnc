@@ -11,7 +11,7 @@ Summary(es):	Sistema de control remoto
 Summary(pl):	Virtual Network Computing -- zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
-Version:	3.3.6
+Version:	3.3.7
 Release:	1
 License:	GPL
 Group:		X11/Applications/Networking
@@ -218,7 +218,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
-%doc vnc-3.3.6-documentation/* README
+%doc %{name}-%{version}-documentation/* README
 
 %if %{!?_without_svgalib:1}%{?_without_svgalib:0}
 %files svgalib
