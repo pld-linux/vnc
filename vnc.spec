@@ -12,7 +12,7 @@ Summary(pl):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.7
-Release:	2
+Release:	3
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-%{version}-unixsrc.tar.gz
@@ -172,7 +172,9 @@ Klient VNC w wersji dla SVGALIBa.
 
 cd Xvnc
 %{__make} World \
-	CDEBUGFLAGS="%{rpmcflags}"
+	CDEBUGFLAGS="%{rpmcflags}" \
+	BOOTSTRAPCFLAGS="%{rpmcflags}" \
+	CXXFLAGS="%{rpmcflags}"
 cd -
 
 %if %{!?_without_svgalib:1}%{?_without_svgalib:0}
