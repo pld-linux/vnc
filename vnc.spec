@@ -35,6 +35,8 @@ Obsoletes:	tightvnc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautocompressdoc	*.GIF
+%define		_prefix		/usr/X11R6
+%define		_mandir		%{_prefix}/man
 
 %description
 VNC stands for Virtual Network Computing. It is, in essence, a remote
