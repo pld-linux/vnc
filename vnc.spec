@@ -8,7 +8,7 @@
 
 Summary:	Virtual Network Computing
 Summary(es):	Sistema de control remoto
-Summary(pl):	Virtual Network Computing -- zdalny desktop
+Summary(pl):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.7
