@@ -42,9 +42,9 @@ cd ..
 
 %build
 xmkmf
-make CDEBUGFLAGS="$RPM_OPT_FLAGS" World
+%{__make} CDEBUGFLAGS="$RPM_OPT_FLAGS" World
 cd Xvnc
-make CDEBUGFLAGS="$RPM_OPT_FLAGS" World
+%{__make} CDEBUGFLAGS="$RPM_OPT_FLAGS" World
 
 %install
 rm -rf $RPM_BUILD_ROOT
