@@ -63,13 +63,13 @@ cd %{name}_unixsrc
 
 install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 
-gzip -9nf vnc_docs/* vnc_unixsrc/README
+gzip -9nf $RPM_BUILD_DIR/%{name}-%{version}/vnc_unixsrc/README
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc vnc_docs/*.gz vnc_unixsrc/*.gz
+%doc vnc_docs/* vnc_unixsrc/README.gz
 %attr(755,root,root) %{_bindir}/*
 %{_datadir}/vnc
