@@ -7,8 +7,8 @@ Version:	3.3.3r2
 Release:	4
 License:	GPL
 Group:		X11/Applications/Networking
-Source0:	http://www.uk.research.att.com/vnc/dist/%{name}-%{version}_unixsrc.tgz
-Source1:	http://www.uk.research.att.com/vnc/dist/%{name}-latest_doc.tgz
+Source0:	http://www.realvnc.com/dist/%{name}-%{version}_unixsrc.tgz
+Source1:	http://www.realvnc.com/dist/%{name}-latest_doc.tgz
 Source2:	vncviewer.1
 Source3:	%{name}-Xvnc.1
 Source4:	vncserver.1
@@ -21,7 +21,7 @@ Patch2:		%{name}-ppc.patch
 Patch3:		%{name}-ComplexProgramTargetNoMan.patch
 Patch4:		%{name}-corre.patch
 Patch5:		%{name}-typo.patch
-URL:		http://www.uk.research.att.com/vnc/
+URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
