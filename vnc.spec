@@ -26,6 +26,7 @@ URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 %{?with_svga:BuildRequires:	svgalib-devel}
 BuildRequires:	zlib-devel
