@@ -8,9 +8,9 @@ Group:          X11/Applications/Networking
 Group(pl):      X11/Aplikacje/Sieciowe
 Source0:	http://www.uk.research.att.com/vnc/dist/%{name}-%{version}_unixsrc.tgz
 Source1:	http://www.uk.research.att.com/vnc/dist/%{name}-%{version}_doc.tgz
-URL:            http://www.uk.research.att.com/vnc/
 Patch0:		vnc-3.3.2r2-vncserver.patch
 Patch1:		vnc-3.3.2r2-ppc.patch
+URL:            http://www.uk.research.att.com/vnc/
 BuildRoot:	/tmp/%{name}-%{version}-root
 
 %define	_prefix	/usr/X11R6
