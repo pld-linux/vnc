@@ -19,10 +19,9 @@ Source2:	svnc-0.1.tar.bz2
 # Source2-md5:	af9a94e1d7795968ce7062fcbe31b84b
 Source3:	vncviewer.desktop
 Source4:	vnc.png
-Patch1:		%{name}-vncserver.patch
-Patch2:		%{name}-ppc.patch
-Patch3:		%{name}-imake.patch
-Patch4:		%{name}-svncviewer.patch
+Patch0:		%{name}-vncserver.patch
+Patch1:		%{name}-svncviewer.patch
+Patch2:		%{name}-imake.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
@@ -75,7 +74,7 @@ Group:		X11/Applications/Networking
 Requires:	XFree86-common
 Requires:	XFree86-fonts-base
 Requires:	XFree86-fonts
-Requires:	vnc-utils
+Requires:	%{name}-utils = %{version}-%{release}
 Requires:	xinitrc-ng
 Obsoletes:	tightvnc-server
 
@@ -151,20 +150,14 @@ Klient VNC w wersji dla SVGALIBa.
 
 %prep
 %setup -q -n %{name}-%{version}-unixsrc -a1 -a2
+%patch0 -p1
 %patch1 -p1
-%ifarch ppc
 %patch2 -p1
-%endif
-%ifarch sparc sparc64
-%patch3 -p1
-%endif
-%patch4 -p1
 
 %build
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
-
 %configure \
 	--with-installed-zlib
 
