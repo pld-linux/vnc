@@ -187,13 +187,13 @@ cd -
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}/vnc/classes,%{_pixmapsdir}} \
-	$RPM_BUILD_ROOT{%{_applnkdir}/Network/Misc,%{_mandir}/man1}
+	$RPM_BUILD_ROOT{%{_desktopdir},%{_mandir}/man1}
 
 ./vncinstall $RPM_BUILD_ROOT{%{_bindir},%{_mandir}}
 
 install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 
-install %{SOURCE3} $RPM_BUILD_ROOT%{_applnkdir}/Network/Misc
+install %{SOURCE3} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_pixmapsdir}
 
 %if %{!?_without_svgalib:1}%{?_without_svgalib:0}
@@ -207,7 +207,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/vncviewer
 %{_mandir}/man1/vncviewer.1*
-%{_applnkdir}/Network/Misc/vncviewer.desktop
+%{_desktopdir}/vncviewer.desktop
 %{_pixmapsdir}/vnc.png
 
 %files server
