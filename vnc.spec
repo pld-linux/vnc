@@ -29,6 +29,9 @@ Patch3:		%{name}-imake.patch
 Patch4:		%{name}-svncviewer.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
 %{!?_without_svga:BuildRequires:	svgalib-devel}
 BuildRequires:	zlib-devel
 Provides:	vnc-client
@@ -181,7 +184,8 @@ cd -
 %if %{!?_without_svga:1}%{?_without_svga:0}
 cd svncviewer
 xmkmf
-%{__make} CDEBUGFLAGS="%{rpmcflags}"
+%{__make} \
+	CDEBUGFLAGS="%{rpmcflags}"
 cd -
 %endif
 
@@ -233,6 +237,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{!?_without_svga:1}%{?_without_svga:0}
 %files svgalib
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/svncviewer
 %doc svncviewer/README
+%attr(755,root,root) %{_bindir}/svncviewer
 %endif
