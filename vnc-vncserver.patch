@@ -1,18 +1,10 @@
-diff -Nur vnc_unixsrc.orig/vncserver vnc_unixsrc/vncserver
---- vnc_unixsrc.orig/vncserver	Thu Oct 26 17:16:37 2000
-+++ vnc_unixsrc/vncserver	Fri May 31 22:59:07 2002
-@@ -35,16 +35,13 @@
- $geometry = "1024x768";
- $depth = 8;
- $desktopName = "X";
--$vncClasses = "/usr/local/vnc/classes";
-+$vncClasses = "/usr/X11R6/share/vnc/classes";
- $vncUserDir = "$ENV{HOME}/.vnc";
- $xauthorityFile = "$ENV{HOME}/.Xauthority";
+--- vnc-3.3.6-unixsrc/vncserver~	Wed Oct 30 11:21:33 2002
++++ vnc-3.3.6-unixsrc/vncserver	Sun Feb  2 21:13:07 2003
+@@ -43,10 +43,7 @@
  
  $defaultXStartup
      = ("#!/bin/sh\n\n".
--       "xrdb \$HOME/.Xresources\n".
+-       "[ -r \$HOME/.Xresources ] && xrdb \$HOME/.Xresources\n".
 -       "xsetroot -solid grey\n".
 -       "xterm -geometry 80x24+10+10 -ls -title \"\$VNCDESKTOP Desktop\" &\n".
 -       "twm &\n");
@@ -20,13 +12,3 @@ diff -Nur vnc_unixsrc.orig/vncserver vnc_unixsrc/vncserver
  
  chop($host = `uname -n`);
  
-@@ -148,7 +152,8 @@
- #
- # $cmd .= " -fp /usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/";
- # $cmd .= " -co /usr/lib/X11/rgb";
--#
-+$cmd .= ' -fp ' . join(',', grep {-f "$_/fonts.dir"} </usr/share/fonts/*>);
-+$cmd .= " -co /usr/X11R6/lib/X11/rgb";
- 
- foreach $arg (@ARGV) {
-     $cmd .= " " . &quotedString($arg);
