@@ -4,7 +4,7 @@ Summary(pl):	Virtual Network Computing -- zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.3r2
-Release:	4
+Release:	5
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-%{version}_unixsrc.tgz
@@ -67,7 +67,11 @@ Summary(es):	Sistema de control remoto
 Summary(pl):	X serwer VNC
 Summary(pt_BR):	Sistema de controle remoto
 Group:		X11/Applications/Networking
+Requires:	vnc-utils
+Requires:	xinitrc
 Requires:	XFree86-common
+Requires:	XFree86-fonts-base
+Requires:	XFree86-fonts
 
 %description server
 VNC stands for Virtual Network Computing. It is, in essence, a remote
