@@ -95,7 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue May 26 1998 Arne Coucheron <arneco@online.no>
   [3.3.2-1]
 - moved java classes to %{_datadir}/vnc/classes
-- moved binaries to /usr/bin
+- moved binaries to %{_bindir}
 - using predefined %%{name} and %%{version}
 - using %defattr in filelist, this means that rpm 2.5 is required to build
 
