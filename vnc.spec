@@ -4,7 +4,7 @@ Summary(pl):	Virtual Network Computing -- zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.3r2
-Release:	3
+Release:	4
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.uk.research.att.com/vnc/dist/%{name}-%{version}_unixsrc.tgz
@@ -168,6 +168,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/vncviewer
 %{_mandir}/man1/vncviewer.1*
+%{_applnkdir}/Network/vncviewer.desktop
 
 %files server
 %defattr(644,root,root,755)
