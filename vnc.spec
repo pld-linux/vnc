@@ -49,9 +49,9 @@ rm -rf vnc_docs/*~ vnc_docs/*,v
 cd %{name}_unixsrc
 
 xmkmf
-%{__make} CDEBUGFLAGS="%{?debug:-O -g}%{!?debug:$RPM_OPT_FLAGS}" World
+%{__make} CDEBUGFLAGS="%{?debug:-O0 -g}%{!?debug:$RPM_OPT_FLAGS}" World
 cd Xvnc
-%{__make} CDEBUGFLAGS="%{?debug:-O -g}%{!?debug:$RPM_OPT_FLAGS}" World
+%{__make} CDEBUGFLAGS="%{?debug:-O0 -g}%{!?debug:$RPM_OPT_FLAGS}" World
 
 %install
 rm -rf $RPM_BUILD_ROOT
