@@ -2,9 +2,6 @@
 # Conditional build:
 %bcond_without	svga		# without svgalib support
 #
-%ifnarch %{ix86} alpha
-%undefine	with_svga
-%endif
 Summary:	Virtual Network Computing
 Summary(es):	Sistema de control remoto
 Summary(pl):	Virtual Network Computing - zdalny desktop
