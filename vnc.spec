@@ -11,7 +11,7 @@ Source1:	http://www.uk.research.att.com/vnc/dist/%{name}-%{version}_doc.tgz
 Patch0:		vnc-3.3.2r2-vncserver.patch
 Patch1:		vnc-3.3.2r2-ppc.patch
 URL:            http://www.uk.research.att.com/vnc/
-BuildRoot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	_prefix	/usr/X11R6
 
