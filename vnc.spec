@@ -4,7 +4,7 @@ Summary(pt_BR):	Sistema de controle remoto.
 Summary(es):	Sistema de control remoto.
 Name:		vnc
 Version:	3.3.3r2
-Release:	1
+Release:	2
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.uk.research.att.com/vnc/dist/%{name}-%{version}_unixsrc.tgz
@@ -60,11 +60,12 @@ cd %{name}_unixsrc
 
 %build
 cd %{name}_unixsrc
+rm -rf Xvnc/lib/zlib
 
 xmkmf
-%{__make} CDEBUGFLAGS="%{rpmcflags}" World
+%{__make} CDEBUGFLAGS="%{rpmcflags}" ZLIB_LIB="-lz" World
 cd Xvnc
-%{__make} CDEBUGFLAGS="%{rpmcflags}" World
+%{__make} CDEBUGFLAGS="%{rpmcflags}" ZLIBDIR= World
 
 %install
 rm -rf $RPM_BUILD_ROOT
