@@ -7,6 +7,6 @@ Exec=vncviewer
 Icon=vnc.png
 Terminal=false
 Type=Application
-Categories=Network;
+Categories=Network;RemoteAccess;
 Encoding=UTF-8
 # vi: encoding=utf-8
