@@ -3,7 +3,8 @@ Name=VNC Viewer
 Name[pl]=Przeglądarka VNC
 Comment=VNC client application
 Comment[pl]=Aplikacja kliencka (wyświetlająca obraz) VNC
-Exec=/usr/X11R6/bin/vncviewer
+Exec=vncviewer
+Icon=vnc.png
 Terminal=0
 Type=Application
 
