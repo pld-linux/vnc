@@ -1,9 +1,9 @@
 #
 # Conditional build:
-# _without_svgalib - without svgalib support
+# _without_svga - without svgalib support
 #
 %ifnarch %{ix86} alpha
-%define _without_svgalib 1
+%define _without_svga 1
 %endif
 
 Summary:	Virtual Network Computing
@@ -29,7 +29,7 @@ Patch3:		%{name}-imake.patch
 Patch4:		%{name}-svncviewer.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
-%{!?_without_svgalib:BuildRequires:	svgalib-devel}
+%{!?_without_svga:BuildRequires:	svgalib-devel}
 BuildRequires:	zlib-devel
 Provides:	vnc-client
 Obsoletes:	tightvnc
@@ -178,7 +178,7 @@ cd Xvnc
 	CXXFLAGS="%{rpmcflags}"
 cd -
 
-%if %{!?_without_svgalib:1}%{?_without_svgalib:0}
+%if %{!?_without_svga:1}%{?_without_svga:0}
 cd svncviewer
 xmkmf
 %{__make} CDEBUGFLAGS="%{rpmcflags}"
@@ -197,7 +197,7 @@ install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 install %{SOURCE3} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_pixmapsdir}
 
-%if %{!?_without_svgalib:1}%{?_without_svgalib:0}
+%if %{!?_without_svga:1}%{?_without_svga:0}
 install svncviewer/svncviewer $RPM_BUILD_ROOT%{_bindir}
 %endif
 
@@ -230,7 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc %{name}-%{version}-documentation/* README
 
-%if %{!?_without_svgalib:1}%{?_without_svgalib:0}
+%if %{!?_without_svga:1}%{?_without_svga:0}
 %files svgalib
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/svncviewer
