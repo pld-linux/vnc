@@ -1,0 +1,2 @@
+- conditional use of vnc-imake patch - only on sparc (there it's needed - but
+  conflicts with ppc patch)
