@@ -1,11 +1,10 @@
 #
 # Conditional build:
-# _without_svga - without svgalib support
+%bcond_without	svga		# without svgalib support
 #
 %ifnarch %{ix86} alpha
-%define _without_svga 1
+%undefine	with_svga
 %endif
-
 Summary:	Virtual Network Computing
 Summary(es):	Sistema de control remoto
 Summary(pl):	Virtual Network Computing - zdalny desktop
@@ -32,7 +31,7 @@ BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
-%{!?_without_svga:BuildRequires:	svgalib-devel}
+%{?with_svga:BuildRequires:	svgalib-devel}
 BuildRequires:	zlib-devel
 Provides:	vnc-client
 Obsoletes:	tightvnc
@@ -181,7 +180,7 @@ cd Xvnc
 	CXXFLAGS="%{rpmcflags}"
 cd -
 
-%if %{!?_without_svga:1}%{?_without_svga:0}
+%if %{with svga}
 cd svncviewer
 xmkmf
 %{__make} \
@@ -201,7 +200,7 @@ install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 install %{SOURCE3} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_pixmapsdir}
 
-%if %{!?_without_svga:1}%{?_without_svga:0}
+%if %{with svga}
 install svncviewer/svncviewer $RPM_BUILD_ROOT%{_bindir}
 %endif
 
@@ -234,7 +233,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc %{name}-%{version}-documentation/* README
 
-%if %{!?_without_svga:1}%{?_without_svga:0}
+%if %{with svga}
 %files svgalib
 %defattr(644,root,root,755)
 %doc svncviewer/README
