@@ -10,12 +10,12 @@ Summary(es):	Sistema de control remoto
 Summary(pl):	Virtual Network Computing -- zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
-Version:	3.3.3r2
-Release:	7
+Version:	3.3.6
+Release:	1
 License:	GPL
 Group:		X11/Applications/Networking
-Source0:	http://www.realvnc.com/dist/%{name}-%{version}_unixsrc.tgz
-Source1:	http://www.realvnc.com/dist/%{name}-latest_doc.tgz
+Source0:	http://www.realvnc.com/dist/%{name}-%{version}-unixsrc.tar.gz
+Source1:	http://www.realvnc.com/dist/%{name}-%{version}-documentation.tar.gz
 Source2:	vncviewer.1
 Source3:	%{name}-Xvnc.1
 Source4:	vncserver.1
@@ -23,7 +23,7 @@ Source5:	vncconnect.1
 Source6:	vncpasswd.1
 Source7:	vncviewer.desktop
 Source8:	svnc-0.1.tar.bz2
-Patch0:		http://www.ce.cctpu.edu.ru/vnc/preview/%{name}-%{version}-unix-tight-1.1p4.patch.gz
+#Patch0:		http://www.ce.cctpu.edu.ru/vnc/preview/%{name}-%{version}-unix-tight-1.1p4.patch.gz
 Patch1:		%{name}-vncserver.patch
 Patch2:		%{name}-ppc.patch
 Patch3:		%{name}-ComplexProgramTargetNoMan.patch
@@ -36,8 +36,6 @@ BuildRequires:	zlib-devel
 %{!?_without_svgalib:BuildRequires:     svgalib}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_prefix		/usr/X11R6
-%define		_mandir		%{_prefix}/man
 
 %define		_noautocompressdoc	*.GIF
 
