@@ -165,7 +165,8 @@ Wersja VNC dla SVGALIBa
 %{__make}
 
 cd Xvnc
-%{__make} World
+%{__make} World \
+	CDEBUGFLAGS="%{rpmcflags}"
 cd -
 
 %if %{!?_without_svgalib:1}%{?_without_svgalib:0}
