@@ -12,7 +12,7 @@ Patch1:    vnc-3.3.2r2-ppc.patch
 Copyright: GPL
 Group:     X11/Applications/Networking
 Group:     X11/Aplikacje/Sieciowe
-BuildRoot: /tmp/%{name}-%{version}-root
+BuildRoot:	/tmp/%{name}-%{version}-root
 Summary(pl): Virtual Network Computing -- zdalny desktop
 
 %description
