@@ -29,8 +29,8 @@ architectures.
 
 %description -l pl
 VNC oznacza Virtual Network Computing. Pakiet ten pozwala na uzyskanie
-obrazu zdalnego desktopu z dowolnej maszynie wyposa¿nej w odpowiedni
-serwer. Dostêpne s± serwery dla Win32, Mac 8.x i X11 a klienty dla
+obrazu zdalnego desktopu na dowolnej maszynie wyposa¿nej w odpowiedni
+serwer. Dostêpne s± serwery dla Win32, Mac 8.x i X11, a klienty dla
 Win32, Mac 8.x, X11, Windows CE, BeOS i Java (np. w przegl±darce
 dzia³aj±cej po HTTP).
 
