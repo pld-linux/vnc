@@ -5,6 +5,7 @@
 %ifnarch %{ix86} alpha
 %define _without_svgalib 1
 %endif
+
 Summary:	Virtual Network Computing
 Summary(es):	Sistema de control remoto
 Summary(pl):	Virtual Network Computing -- zdalny desktop
@@ -16,26 +17,18 @@ License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-%{version}-unixsrc.tar.gz
 Source1:	http://www.realvnc.com/dist/%{name}-%{version}-documentation.tar.gz
-Source2:	vncviewer.1
-Source3:	%{name}-Xvnc.1
-Source4:	vncserver.1
-Source5:	vncconnect.1
-Source6:	vncpasswd.1
-Source7:	vncviewer.desktop
-Source8:	svnc-0.1.tar.bz2
-#Patch0:		http://www.ce.cctpu.edu.ru/vnc/preview/%{name}-%{version}-unix-tight-1.1p4.patch.gz
+Source2:	svnc-0.1.tar.bz2
+Source3:	vncviewer.desktop
+Source4:	vnc.png
 Patch1:		%{name}-vncserver.patch
 Patch2:		%{name}-ppc.patch
-Patch3:		%{name}-ComplexProgramTargetNoMan.patch
-Patch4:		%{name}-corre.patch
-Patch5:		%{name}-typo.patch
-Patch6:		%{name}-imake.patch
+Patch3:		%{name}-imake.patch
+Patch4:		%{name}-svncviewer.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	zlib-devel
 %{!?_without_svgalib:BuildRequires:     svgalib}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
 
 %define		_noautocompressdoc	*.GIF
 
@@ -151,50 +144,48 @@ SVGALIB version of VNC
 Wersja VNC dla SVGALIBa
 
 %prep
-%setup -q -n %{name}_unixsrc -a1
-%patch0 -p1
+%setup -q -n %{name}-%{version}-unixsrc -a1 -a2
 %patch1 -p1
 %ifarch ppc
 %patch2 -p1
 %endif
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 %ifarch sparc sparc64
-%patch6 -p1
+%patch3 -p1
 %endif
-
-tar xvfj %{SOURCE8}
+%patch4 -p1
 
 %build
-rm -rf Xvnc/lib/zlib
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
 
-xmkmf
-%{__make} CDEBUGFLAGS="%{rpmcflags}" ZLIB_LIB="-lz" World
-%{__make} World -C Xvnc \
-	CDEBUGFLAGS="%{rpmcflags}" ZLIBDIR=
+%configure \
+    --with-installed-zlib
+
+%{__make}
+
+cd Xvnc
+%{__make} World
+cd -
 
 %if %{!?_without_svgalib:1}%{?_without_svgalib:0}
 cd svncviewer
 xmkmf
 %{__make} CDEBUGFLAGS="%{rpmcflags}"
-cd ..
+cd -
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}/vnc/classes} \
-	$RPM_BUILD_ROOT{%{_mandir}/man1,%{_applnkdir}/Network}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}/vnc/classes,%{_pixmapsdir}} \
+	$RPM_BUILD_ROOT{%{_applnkdir}/Network/Misc,%{_mandir}/man1}
 
-./vncinstall $RPM_BUILD_ROOT%{_bindir}
+./vncinstall $RPM_BUILD_ROOT{%{_bindir},%{_mandir}}
 
 install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 
-install %{SOURCE2} %{SOURCE4} %{SOURCE5} %{SOURCE6} \
-	$RPM_BUILD_ROOT%{_mandir}/man1
-install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/man1/Xvnc.1
-
-install %{SOURCE7} $RPM_BUILD_ROOT%{_applnkdir}/Network
+install %{SOURCE3} $RPM_BUILD_ROOT%{_applnkdir}/Network/Misc
+install %{SOURCE4} $RPM_BUILD_ROOT%{_pixmapsdir}
 
 %if %{!?_without_svgalib:1}%{?_without_svgalib:0}
 install svncviewer/svncviewer $RPM_BUILD_ROOT%{_bindir}
@@ -207,7 +198,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/vncviewer
 %{_mandir}/man1/vncviewer.1*
-%{_applnkdir}/Network/vncviewer.desktop
+%{_applnkdir}/Network/Misc/vncviewer.desktop
+%{_pixmapsdir}/vnc.png
 
 %files server
 %defattr(644,root,root,755)
@@ -226,7 +218,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
-%doc vnc_docs/*.{gif,jpg,html,htm,pdf,css,GIF} README
+%doc vnc-3.3.6-documentation/* README
 
 %if %{!?_without_svgalib:1}%{?_without_svgalib:0}
 %files svgalib
