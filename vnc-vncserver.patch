@@ -1,6 +1,6 @@
-diff -urN vnc.orig/vncserver vnc/vncserver
---- vnc.orig/vncserver	Wed Jul 15 17:40:23 1998
-+++ vnc/vncserver	Sat Jul 25 02:42:02 1998
+diff -Nur vnc_unixsrc.orig/vncserver vnc_unixsrc/vncserver
+--- vnc_unixsrc.orig/vncserver	Thu Oct 26 17:16:37 2000
++++ vnc_unixsrc/vncserver	Fri May 31 22:59:07 2002
 @@ -35,16 +35,13 @@
  $geometry = "1024x768";
  $depth = 8;
@@ -20,13 +20,13 @@ diff -urN vnc.orig/vncserver vnc/vncserver
  
  chop($host = `uname -n`);
  
-@@ -146,7 +143,8 @@
+@@ -148,7 +152,8 @@
  #
  # $cmd .= " -fp /usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/";
  # $cmd .= " -co /usr/lib/X11/rgb";
 -#
-+$cmd .= ' -fp ' . join(',', grep {-f "$_/fonts.dir"} </usr/X11R6/lib/X11/fonts/*>);
-+$cmd .= " -co /usr/lib/X11/rgb";
++$cmd .= ' -fp ' . join(',', grep {-f "$_/fonts.dir"} </usr/share/fonts/*>);
++$cmd .= " -co /usr/X11R6/lib/X11/rgb";
  
  foreach $arg (@ARGV) {
      $cmd .= " " . &quotedString($arg);

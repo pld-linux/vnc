@@ -1,0 +1,78 @@
+.\"		-*-Nroff-*-
+.\" Copyright 2000 Red Hat, Inc.
+.TH XVNC 1 "6 Nov 2000"
+.SH NAME
+Xvnc \- a VNC server
+.SH SYNOPSIS
+.TP
+\fBXvnc\fR
+[\-rfbport \fIport\fR] [\-rfbwait \fItime\fR] [\-nocursor]
+[\-rfbauth \fIpasswd-file\fR] [\-httpd \fIdir\fR]
+[\-httpport \fIport\fR] [\-deferupdate \fItime\fR]
+[\-economictranslate] [\-lazytight] [\-desktop \fIname\fR] [\-alwaysshared]
+[\-nevershared] [\-dontdisconnect] [\-localhost]
+[\fIX-options\fR...]
+.SH DESCRIPTION
+\fBXvnc\fR is a VNC (Virtual Network Computing) server.  It acts like
+an X server with a virtual display.  The display can be seen by a VNC
+viewer application, which may be running on a different machine: see
+\fBvncviewer\fR(1).
+
+It is built inside the source code tree of XFree86, and shares many
+options with it.
+
+Note that if you are going to use VNC on an untrusted network, you
+will need to use SSH to prevent unauthorised access.  See
+<URL:http://www.uk.research.att.com/vnc/sshvnc.html> for details.
+.SH OPTIONS
+The VNC-specific options are as follows:
+.TP
+\fB\-rfbport\fR \fIport\fR
+TCP port for RFB protocol.
+.TP
+\fB\-rfbwait\fR \fItime\fR
+Maximum time, in milliseconds, to wait for RFB client.
+.TP
+\fB\-nocursor\fR
+Don't put up a cursor.
+.TP
+\fB\-rfbauth\fR \fIpasswd-file\fR
+Use authentication on RFB protocol from specified file; see
+\fBvncpasswd\fR(1).
+.TP
+\fB\-httpd\fR \fIdir\fR
+Serve files via HTTP from here.
+.TP
+\fB\-httpport\fR \fIport\fR
+Port for HTTP.
+.TP
+\fB\-deferupdate\fR \fItime\fR
+Time, in milliseconds, to defer updates (default 40).
+.TP
+\fB\-economictranslate\fR
+Use less memory-hungry translation.
+.TP
+\fB\-lazytight\fR
+Disable "gradient" filter in tight encoding.
+.TP
+\fB\-desktop\fR \fIname\fR
+Set VNC desktop name (default x11).
+.TP
+\fB\-alwaysshared\fR
+Always treat new clients as shared.
+.TP
+\fB\-nevershared\fR
+Never treat new clients as shared.
+.TP
+\fB\-dontdisconnect\fR
+Don't disconnect existing clients when a new non-shared connection
+comes in (refuse new connection instead).
+.TP
+\fB\-localhost\fR
+Only allow connections from localhost.
+.SH SEE ALSO
+\fBvncviewer\fR(1), \fBvncserver\fR(1), \fBvncconnect\fR(1), \fBvncpasswd\fR(1)
+.SH AUTHOR
+AT&T Laboratories Cambridge
+.br
+Man page by Tim Waugh <twaugh@redhat.com>

@@ -1,0 +1,44 @@
+.\"		-*-Nroff-*-
+.\" Copyright 2000 Red Hat, Inc.
+.TH VNCSERVER 1 "6 Nov 2000"
+.SH NAME
+vncserver \- start a VNC server application
+.SH SYNOPSIS
+.TP
+\fBvncserver\fR
+[:\fInumber\fR] [\-geometry \fIwidth\fRx\fIheight\fR] [\-depth \fIdepth\fR]
+[\-pixelformat rgb\fINNN\fR\|bgr\fINNN\fR] [\-name \fIdesktop\-name\fR]
+[\fIXvnc\-options\fR...]
+.TP
+\fBvncserver\fR \-kill :\fInumber\fR
+.SH DESCRIPTION
+Start (or stop) a VNC session.  This is a VNC (Virtual Network
+Computing) server.  With \fBvncserver\fR you can start a computing
+desktop environment that you wish to be able to use from a different
+machine.
+.SH OPTIONS
+.TP
+\fB:\fR\fInumber\fR
+The display number to use.  If omitted, the next free display number
+is used.
+.TP
+\fB\-geometry\fR \fIwidth\fR\fBx\fR\fIheight\fR
+The session is to be of the specified size.
+.TP
+\fB\-depth\fR \fIdepth\fR
+The colour depth of the visual to provide (bits per pixel).
+.TP
+\fB\-pixelformat\fR \fBrgb\fR\fINNN\fR\|\fBbgr\fR\fINNN\fR
+The colour representation bit allocations to use.
+.TP
+\fB\-name\fR \fIdesktop\-name\fR
+The name to give the desktop.
+.TP
+\fB\-kill\fR \fB:\fR\fInumber\fR
+Stop the session running on display \fInumber\fR.
+.SH SEE ALSO
+\fBvncviewer\fR(1), \fBXvnc\fR(1), \fBvncpasswd\fR(1), \fBvncconnect\fR(1)
+.SH AUTHOR
+AT&T Laboratories Cambridge
+.br
+Man page by Tim Waugh <twaugh@redhat.com>
