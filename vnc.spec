@@ -54,7 +54,7 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}/vnc/classes}
 
 install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 
-strip $RPM_BUILD_ROOT%{_bindir}/*
+strip $RPM_BUILD_ROOT%{_bindir}/{Xvnc,vncpasswd,vncviewer}
 
 gzip -9nf README doc/*
 
@@ -64,8 +64,5 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc doc README.gz
-%attr(711,root,root) /usr/X11R6/bin/Xvnc
-%attr(711,root,root) /usr/X11R6/bin/vncpasswd
-%attr(755,root,root) /usr/X11R6/bin/vncserver
-%attr(711,root,root) /usr/X11R6/bin/vncviewer
-%{_datadir}/vnc/classes
+%attr(755,root,root) /usr/X11R6/bin/vncpasswd
+%{_datadir}/vnc
