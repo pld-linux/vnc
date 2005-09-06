@@ -8,7 +8,7 @@ Summary(pl):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.7
-Release:	8
+Release:	9
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-%{version}-unixsrc.tar.gz
