@@ -1,0 +1,11 @@
+--- xorg-server-0.99.2/hw/xfree86/utils/xorgcfg/text-mode.c~	2005-08-25 06:09:45.000000000 +0200
++++ xorg-server-0.99.2/hw/xfree86/utils/xorgcfg/text-mode.c	2005-10-20 14:05:53.223996000 +0200
+@@ -36,7 +36,7 @@
+ #if defined(_SCO_DS) || (defined(sun) && defined(__SVR4))
+ #include <curses.h>
+ #else
+-#include <ncurses.h>
++#include <ncurses/ncurses.h>
+ #endif
+ #include <ctype.h>
+ #include <X11/Xlib.h>
