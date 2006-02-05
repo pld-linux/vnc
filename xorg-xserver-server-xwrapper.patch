@@ -320,8 +320,8 @@
 +    exit(1);
 +}
 +
---- xorg-server-1.0.1/os/Makefile.am	2005-12-06 16:50:35.000000000 +0100
-+++ xorg-server-1.0.1/os/Makefile.am	2006-02-05 14:36:53.211755250 +0100
+--- os/Makefile.am	2005-12-06 16:50:35.000000000 +0100
++++ os/Makefile.am	2006-02-05 14:36:53.211755250 +0100
 @@ -29,6 +29,11 @@
  	xprintf.c	\
  	$(XORG_SOURCES)
@@ -334,8 +334,8 @@
  if XCSECURITY
  libos_la_SOURCES += $(XCSECURITY_SOURCES)
  endif
---- xorg-server-1.0.1/os/Makefile.in	2005-12-21 08:36:40.000000000 +0100
-+++ xorg-server-1.0.1/os/Makefile.in	2006-02-05 14:56:34.701593750 +0100
+--- os/Makefile.in	2005-12-21 08:36:40.000000000 +0100
++++ os/Makefile.in	2006-02-05 14:56:34.701593750 +0100
 @@ -456,6 +456,11 @@
  	$(XORG_SOURCES)\
  $(am__append_1) $(am__append_2) $(am__append_3) $(am__append_4)
