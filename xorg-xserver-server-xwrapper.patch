@@ -334,17 +334,4 @@
  if XCSECURITY
  libos_la_SOURCES += $(XCSECURITY_SOURCES)
  endif
---- os/Makefile.in	2005-12-21 08:36:40.000000000 +0100
-+++ os/Makefile.in	2006-02-05 14:56:34.701593750 +0100
-@@ -456,6 +456,11 @@
- 	$(XORG_SOURCES)\
- $(am__append_1) $(am__append_2) $(am__append_3) $(am__append_4)
- 
-+bin_PROGRAMS = Xwrapper
-+Xwrapper_SOURCES = wrapper.c
-+Xwrapper_CFLAGS = -DUSE_PAM -DXSERVER_PATH=\"/usr/bin/Xorg\" $(AM_CFLAGS)
-+Xwrapper_LDADD = -lpam_misc
-+
- libcwrapper_la_SOURCES = \
- 	$(top_srcdir)/hw/xfree86/os-support/shared/libc_wrapper.c
- 
+
