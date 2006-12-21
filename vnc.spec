@@ -8,7 +8,7 @@ Summary(pl):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
 Version:	3.3.7
-Release:	9
+Release:	10
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-%{version}-unixsrc.tar.gz
@@ -22,6 +22,9 @@ Source4:	vnc.png
 Patch0:		%{name}-vncserver.patch
 Patch1:		%{name}-svncviewer.patch
 Patch2:		%{name}-imake.patch
+Patch3:		%{name}-svncviewer-pl_keys.patch
+Patch4:		%{name}-glibc_version.patch
+Patch5:		%{name}-malloc.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
@@ -154,6 +157,9 @@ Klient VNC w wersji dla SVGALIBa.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 %{__libtoolize}
