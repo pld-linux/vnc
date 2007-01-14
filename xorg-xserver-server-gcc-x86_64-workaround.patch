@@ -1,0 +1,9 @@
+--- xorg-server-1.1.99.903/hw/xfree86/scanpci/Makefile.am.org	2007-01-14 19:12:55.064720250 +0100
++++ xorg-server-1.1.99.903/hw/xfree86/scanpci/Makefile.am	2007-01-14 19:18:16.832829500 +0100
+@@ -1,3 +1,6 @@
++
++CFLAGS = @CFLAGS@ -O0
++
+ module_LTLIBRARIES = libscanpci.la libpcidata.la
+ 
+ libpcidata_la_LDFLAGS = -avoid-version
