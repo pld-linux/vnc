@@ -1,37 +1,41 @@
 #
 # Conditional build:
-%bcond_without	svga		# without svgalib support
 #
+
 Summary:	Virtual Network Computing
 Summary(es):	Sistema de control remoto
 Summary(pl):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR):	Sistema de controle remoto
 Name:		vnc
-Version:	3.3.7
-Release:	10
+Version:	4.1.2
+Release:	0.1
 License:	GPL
 Group:		X11/Applications/Networking
-Source0:	http://www.realvnc.com/dist/%{name}-%{version}-unixsrc.tar.gz
-# Source0-md5:	511ffbc8ed8d9df82e7c67852164728c
-Source1:	http://www.realvnc.com/dist/%{name}-%{version}-documentation.tar.gz
+Source0:	http://www.realvnc.com/dist/%{name}-4_1_2-unixsrc.tar.gz
+# Source0-md5:	cf9a6fe8f592286b5e0fdde686504ffb
+## Source1:	http://www.realvnc.com/dist/%{name}-%{version}-documentation.tar.gz
 # Source1-md5:	0c62c784f1278207fd82693e66ebca40
-Source2:	svnc-0.1.tar.bz2
+## Source2:	svnc-0.1.tar.bz2
 # Source2-md5:	af9a94e1d7795968ce7062fcbe31b84b
 Source3:	vncviewer.desktop
 Source4:	vnc.png
-Patch0:		%{name}-vncserver.patch
-Patch1:		%{name}-svncviewer.patch
-Patch2:		%{name}-imake.patch
-Patch3:		%{name}-svncviewer-pl_keys.patch
-Patch4:		%{name}-glibc_version.patch
-Patch5:		%{name}-malloc.patch
+#Patch0:		%{name}-vncserver.patch
+#Patch1:		%{name}-svncviewer.patch
+#Patch2:		%{name}-imake.patch
+#Patch3:		%{name}-svncviewer-pl_keys.patch
+#Patch4:		%{name}-glibc_version.patch
+#Patch5:		%{name}-malloc.patch
 URL:		http://www.realvnc.com/
-BuildRequires:	XFree86-devel
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXmu-devel
+BuildRequires:	xorg-lib-libXaw-devel
+BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libXtst-devel
+BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
-%{?with_svga:BuildRequires:	svgalib-devel}
 BuildRequires:	zlib-devel
 Provides:	vnc-client
 Obsoletes:	tightvnc
@@ -141,52 +145,37 @@ This package contains documentation for VNC protocol, utilities etc.
 %description doc -l pl
 Ten pakiet zawiera dokumentacjê do VNC (protoko³u, programów itp.).
 
-%package svgalib
-Summary:	VNC Viewer for svgalib
-Summary(pl):	Przegl±darka VNC dla svgaliba
-Group:		X11/Applications/Networking
-
-%description svgalib
-SVGALIB version of VNC viewer.
-
-%description svgalib -l pl
-Klient VNC w wersji dla SVGALIBa.
-
 %prep
-%setup -q -n %{name}-%{version}-unixsrc -a1 -a2
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+%setup -q -n %{name}-4_1_2-unixsrc
 
 %build
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
+(cd unix;
+%{__libtoolize};
+%{__aclocal};
+%{__autoconf};
 %configure \
-	--with-installed-zlib
+	--with-installed-zlib \
+	--with-x 
+)
 
-%{__make}
+(cd common;
+%{__libtoolize};
+%{__aclocal};
+%{__autoconf};
+%configure \
+	--with-installed-zlib \
+	--with-x 
+)
 
-cd Xvnc
-%{__make} World \
-	CDEBUGFLAGS="%{rpmcflags}" \
-	BOOTSTRAPCFLAGS="%{rpmcflags}" \
-	CXXFLAGS="%{rpmcflags}"
-cd -
 
-%if %{with svga}
-cd svncviewer
-xmkmf
-%{__make} \
-	CDEBUGFLAGS="%{rpmcflags}"
-cd -
-%endif
+%{__make} -C common
+%{__make} -C unix
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+cd unix
+
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}/vnc/classes,%{_pixmapsdir}} \
 	$RPM_BUILD_ROOT{%{_desktopdir},%{_mandir}/man1}
 
@@ -197,9 +186,6 @@ install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 install %{SOURCE3} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_pixmapsdir}
 
-%if %{with svga}
-install svncviewer/svncviewer $RPM_BUILD_ROOT%{_bindir}
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -229,10 +215,3 @@ rm -rf $RPM_BUILD_ROOT
 %files doc
 %defattr(644,root,root,755)
 %doc %{name}-%{version}-documentation/* README
-
-%if %{with svga}
-%files svgalib
-%defattr(644,root,root,755)
-%doc svncviewer/README
-%attr(755,root,root) %{_bindir}/svncviewer
-%endif
