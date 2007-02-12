@@ -3,9 +3,9 @@
 #
 
 Summary:	Virtual Network Computing
-Summary(es):	Sistema de control remoto
-Summary(pl):	Virtual Network Computing - zdalny desktop
-Summary(pt_BR):	Sistema de controle remoto
+Summary(es.UTF-8):   Sistema de control remoto
+Summary(pl.UTF-8):   Virtual Network Computing - zdalny desktop
+Summary(pt_BR.UTF-8):   Sistema de controle remoto
 Name:		vnc
 Version:	4.1.2
 Release:	0.1
@@ -52,32 +52,32 @@ architectures.
 
 This package contains VNC viewer.
 
-%description -l es
+%description -l es.UTF-8
 Sistema de control remoto.
 
-%description -l pl
+%description -l pl.UTF-8
 VNC oznacza Virtual Network Computing. Pakiet ten pozwala na uzyskanie
-obrazu zdalnego desktopu na dowolnej maszynie wyposa¿onej w odpowiedni
-serwer. Dostêpne s± serwery dla Win32, Mac 8.x i X11, a klienty dla
-Win32, Mac 8.x, X11, Windows CE, BeOS i Java (np. w przegl±darce
-dzia³aj±cej po HTTP).
+obrazu zdalnego desktopu na dowolnej maszynie wyposaÅ¼onej w odpowiedni
+serwer. DostÄ™pne sÄ… serwery dla Win32, Mac 8.x i X11, a klienty dla
+Win32, Mac 8.x, X11, Windows CE, BeOS i Java (np. w przeglÄ…darce
+dziaÅ‚ajÄ…cej po HTTP).
 
-Ten pakiet zawiera program wy¶wietlaj±cy ekran VNC (vncviewer).
+Ten pakiet zawiera program wyÅ›wietlajÄ…cy ekran VNC (vncviewer).
 
-%description -l pt_BR
+%description -l pt_BR.UTF-8
 VNC (Virtual Network Computing) ' um sistema de controle remoto que
-permite visualizar um ambiente desktop nÇo somente da m quina onde o
-VNC est  rodando, mas de qualquer lugar da Internet e de uma variedade
-de arquiteturas. O VNC ' diferente de um servidor X em v rios
-aspectos: nÇo salva nenhum estado no visualizador VNC, ' pequeno e
+permite visualizar um ambiente desktop nÃ‡o somente da mÂ quina onde o
+VNC estÂ  rodando, mas de qualquer lugar da Internet e de uma variedade
+de arquiteturas. O VNC ' diferente de um servidor X em vÂ rios
+aspectos: nÃ‡o salva nenhum estado no visualizador VNC, ' pequeno e
 simples, ' de fato independente de plataforma, e um desktop pode ser
 visto e usado por diversos visualizadores ao mesmo tempo.
 
 %package server
 Summary:	VNC X server
-Summary(es):	Sistema de control remoto
-Summary(pl):	X serwer VNC
-Summary(pt_BR):	Sistema de controle remoto
+Summary(es.UTF-8):   Sistema de control remoto
+Summary(pl.UTF-8):   X serwer VNC
+Summary(pt_BR.UTF-8):   Sistema de controle remoto
 Group:		X11/Applications/Networking
 Requires:	XFree86-common
 Requires:	XFree86-fonts-base
@@ -95,30 +95,30 @@ architectures.
 
 This package contains VNC X server (Xvnc).
 
-%description server -l es
+%description server -l es.UTF-8
 Sistema de control remoto.
 
-%description server -l pl
+%description server -l pl.UTF-8
 VNC oznacza Virtual Network Computing. Pakiet ten pozwala na uzyskanie
-obrazu zdalnego desktopu na dowolnej maszynie wyposa¿onej w odpowiedni
-serwer. Dostêpne s± serwery dla Win32, Mac 8.x i X11, a klienty dla
-Win32, Mac 8.x, X11, Windows CE, BeOS i Java (np. w przegl±darce
-dzia³aj±cej po HTTP).
+obrazu zdalnego desktopu na dowolnej maszynie wyposaÅ¼onej w odpowiedni
+serwer. DostÄ™pne sÄ… serwery dla Win32, Mac 8.x i X11, a klienty dla
+Win32, Mac 8.x, X11, Windows CE, BeOS i Java (np. w przeglÄ…darce
+dziaÅ‚ajÄ…cej po HTTP).
 
 Ten pakiet zawiera X serwer VNC (Xvnc).
 
-%description server -l pt_BR
+%description server -l pt_BR.UTF-8
 VNC (Virtual Network Computing) ' um sistema de controle remoto que
-permite visualizar um ambiente desktop nÇo somente da m quina onde o
-VNC est  rodando, mas de qualquer lugar da Internet e de uma variedade
-de arquiteturas. O VNC ' diferente de um servidor X em v rios
-aspectos: nÇo salva nenhum estado no visualizador VNC, ' pequeno e
+permite visualizar um ambiente desktop nÃ‡o somente da mÂ quina onde o
+VNC estÂ  rodando, mas de qualquer lugar da Internet e de uma variedade
+de arquiteturas. O VNC ' diferente de um servidor X em vÂ rios
+aspectos: nÃ‡o salva nenhum estado no visualizador VNC, ' pequeno e
 simples, ' de fato independente de plataforma, e um desktop pode ser
 visto e usado por diversos visualizadores ao mesmo tempo.
 
 %package utils
 Summary:	Additional utilities for VNC
-Summary(pl):	Dodatkowe narzêdzia do VNC
+Summary(pl.UTF-8):   Dodatkowe narzÄ™dzia do VNC
 Group:		X11/Applications/Networking
 Obsoletes:	tightvnc-utils
 
@@ -128,22 +128,22 @@ vncpasswd. vncconnect tells Xvnc server to connect to a listening VNC
 viewer. vncpasswd generates password file (both on server and
 viewer side).
 
-%description utils -l pl
-Ten pakiet zawiera dodatkowe narzêdzia VNC: vncconnect i vncpasswd.
-vncconnect s³u¿y do po³±czenia serwera Xvnc z nas³uchuj±cym
-vncviewerem. vncpasswd s³u¿y to tworzenia pliku z has³em (zarówno po
-stronie serwera, jak i przegl±darki).
+%description utils -l pl.UTF-8
+Ten pakiet zawiera dodatkowe narzÄ™dzia VNC: vncconnect i vncpasswd.
+vncconnect sÅ‚uÅ¼y do poÅ‚Ä…czenia serwera Xvnc z nasÅ‚uchujÄ…cym
+vncviewerem. vncpasswd sÅ‚uÅ¼y to tworzenia pliku z hasÅ‚em (zarÃ³wno po
+stronie serwera, jak i przeglÄ…darki).
 
 %package doc
 Summary:	VNC documentation
-Summary(pl):	Dokumentacja do VNC
+Summary(pl.UTF-8):   Dokumentacja do VNC
 Group:		Documentation
 
 %description doc
 This package contains documentation for VNC protocol, utilities etc.
 
-%description doc -l pl
-Ten pakiet zawiera dokumentacjê do VNC (protoko³u, programów itp.).
+%description doc -l pl.UTF-8
+Ten pakiet zawiera dokumentacjÄ™ do VNC (protokoÅ‚u, programÃ³w itp.).
 
 %prep
 %setup -q -n %{name}-4_1_2-unixsrc
