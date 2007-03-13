@@ -13,10 +13,10 @@ License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://www.realvnc.com/dist/%{name}-4_1_2-unixsrc.tar.gz
 # Source0-md5:	cf9a6fe8f592286b5e0fdde686504ffb
-## Source1:	http://www.realvnc.com/dist/%{name}-%{version}-documentation.tar.gz
-# Source1-md5:	0c62c784f1278207fd82693e66ebca40
-## Source2:	svnc-0.1.tar.bz2
-# Source2-md5:	af9a94e1d7795968ce7062fcbe31b84b
+# Source1:	http://www.realvnc.com/dist/%{name}-%{version}-documentation.tar.gz
+## Source1-md5:	0c62c784f1278207fd82693e66ebca40
+# Source2:	svnc-0.1.tar.bz2
+## Source2-md5:	af9a94e1d7795968ce7062fcbe31b84b
 Source3:	vncviewer.desktop
 Source4:	vnc.png
 #Patch0:		%{name}-vncserver.patch
