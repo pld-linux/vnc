@@ -1,20 +1,23 @@
 #
 # Conditional build:
 #
+%define		ver	4.1.2
+%define		_ver	%(echo %{ver} | tr . _)
+%define		docver	4.0
 
 Summary:	Virtual Network Computing
 Summary(es.UTF-8):	Sistema de control remoto
 Summary(pl.UTF-8):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR.UTF-8):	Sistema de controle remoto
 Name:		vnc
-Version:	4.1.2
-Release:	0.1
+Version:	%{ver}
+Release:	0.2
 License:	GPL
 Group:		X11/Applications/Networking
-Source0:	http://www.realvnc.com/dist/%{name}-4_1_2-unixsrc.tar.gz
+Source0:	http://www.realvnc.com/dist/%{name}-%{_ver}-unixsrc.tar.gz
 # Source0-md5:	cf9a6fe8f592286b5e0fdde686504ffb
-# Source1:	http://www.realvnc.com/dist/%{name}-%{version}-documentation.tar.gz
-## Source1-md5:	0c62c784f1278207fd82693e66ebca40
+Source1:	http://www.realvnc.com/dist/%{name}-%{docver}-documentation.tar.gz
+# Source1-md5:	eb3bf940b88cabb238580e2ba31b927b
 # Source2:	svnc-0.1.tar.bz2
 ## Source2-md5:	af9a94e1d7795968ce7062fcbe31b84b
 Source3:	vncviewer.desktop
@@ -146,7 +149,7 @@ This package contains documentation for VNC protocol, utilities etc.
 Ten pakiet zawiera dokumentację do VNC (protokołu, programów itp.).
 
 %prep
-%setup -q -n %{name}-4_1_2-unixsrc
+%setup -q -n %{name}-4_1_2-unixsrc -a 1
 
 %build
 (cd unix;
@@ -181,7 +184,7 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}/vnc/classes,%{_pixmapsdir}} \
 
 ./vncinstall $RPM_BUILD_ROOT{%{_bindir},%{_mandir}}
 
-install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
+#install classes/* $RPM_BUILD_ROOT%{_datadir}/vnc/classes
 
 install %{SOURCE3} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_pixmapsdir}
@@ -199,19 +202,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %files server
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/Xvnc
+%attr(755,root,root) %{_bindir}/x0vncserver
 %attr(755,root,root) %{_bindir}/vncserver
 %{_datadir}/vnc
-%{_mandir}/man1/Xvnc.1*
+%{_mandir}/man1/x0vncserver.1*
 %{_mandir}/man1/vncserver.1*
 
 %files utils
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/vncconnect
+%attr(755,root,root) %{_bindir}/vncconfig
 %attr(755,root,root) %{_bindir}/vncpasswd
-%{_mandir}/man1/vncconnect.1*
+%{_mandir}/man1/vncconfig.1*
 %{_mandir}/man1/vncpasswd.1*
 
 %files doc
 %defattr(644,root,root,755)
-%doc %{name}-%{version}-documentation/* README
+%doc %{name}-%{docver}-documentation/* README
