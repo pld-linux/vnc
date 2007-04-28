@@ -1,8 +1,6 @@
 #
 # Conditional build:
 #
-%define		ver	4.1.2
-%define		_ver	%(echo %{ver} | tr . _)
 %define		docver	4.0
 
 Summary:	Virtual Network Computing
@@ -10,7 +8,8 @@ Summary(es.UTF-8):	Sistema de control remoto
 Summary(pl.UTF-8):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR.UTF-8):	Sistema de controle remoto
 Name:		vnc
-Version:	%{ver}
+Version:	4.1.2
+%define		_ver	%(echo %{version} | tr . _)
 Release:	0.2
 License:	GPL
 Group:		X11/Applications/Networking
@@ -30,16 +29,16 @@ Source4:	vnc.png
 #Patch4:		%{name}-glibc_version.patch
 #Patch5:		%{name}-malloc.patch
 URL:		http://www.realvnc.com/
-BuildRequires:	xorg-lib-libX11-devel
-BuildRequires:	xorg-lib-libXmu-devel
-BuildRequires:	xorg-lib-libXaw-devel
-BuildRequires:	xorg-lib-libXext-devel
-BuildRequires:	xorg-lib-libXtst-devel
-BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
+BuildRequires:	xorg-lib-libICE-devel
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXaw-devel
+BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libXmu-devel
+BuildRequires:	xorg-lib-libXtst-devel
 BuildRequires:	zlib-devel
 Provides:	vnc-client
 Obsoletes:	tightvnc
