@@ -14,7 +14,8 @@ Version:	%{ver}
 Release:	0.2
 License:	GPL
 Group:		X11/Applications/Networking
-Source0:	http://www.realvnc.com/dist/%{name}-%{_ver}-unixsrc.tar.gz
+Source0:	http://fresh.t-systems-sfr.com/linux/src/vnc-%{_ver}-unixsrc.tar.gz
+#Source0:	http://www.realvnc.com/dist/%{name}-%{_ver}-unixsrc.tar.gz
 # Source0-md5:	cf9a6fe8f592286b5e0fdde686504ffb
 Source1:	http://www.realvnc.com/dist/%{name}-%{docver}-documentation.tar.gz
 # Source1-md5:	eb3bf940b88cabb238580e2ba31b927b
