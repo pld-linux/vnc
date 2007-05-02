@@ -1,0 +1,11 @@
+--- vnc-4_1_2-unixsrc/unix/vncviewer/CConn.cxx.newfbsize        2006-07-15 12:24:08.000000000 +0200
++++ vnc-4_1_2-unixsrc/unix/vncviewer/CConn.cxx  2006-07-15 12:23:29.000000000 +0200
+@@ -305,6 +305,8 @@
+   if (encoding != encodingCopyRect) {
+     lastServerEncoding = encoding;
+   }
++  if (encoding == pseudoEncodingDesktopSize)
++    setDesktopSize( r.width(), r.height() );
+ }
+
+ void CConn::endRect(const Rect& r, unsigned int encoding)

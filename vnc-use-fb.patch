@@ -1,0 +1,246 @@
+--- vnc-4_1-unixsrc/unix/xc/config/cf/vnc.def.use-fb	2005-02-28 12:59:09.000000000 +0000
++++ vnc-4_1-unixsrc/unix/xc/config/cf/vnc.def	2005-03-04 16:13:19.000000000 +0000
+@@ -1,35 +0,0 @@
+-#define BuildServersOnly YES
+-#define BuildFonts NO
+-#define BuildClients NO
+-#define BuildDocs NO
+-#define BuildPexExt NO
+-#define BuildNls NO
+-#define BuildXIE NO
+-#define BuildGlxExt NO
+-#define XnestServer NO
+-#define XprtServer NO
+-
+-#ifdef SunArchitecture
+-#define ProjectRoot /usr/openwin
+-#define HasGcc2 YES
+-#define BuildXKB NO
+-#endif
+-
+-#define HasFreetype2 NO
+-#define BuildVNCExt YES
+-#define VNCExtDefines -DVNCEXT
+-#define SiteExtensionDefines VNCExtDefines
+-#define SiteExtensionDirs vnc
+-
+-#define VncUnixDir $(TOP)/..
+-#define VncCommonDir VncUnixDir/../common
+-#define VncExtLibs VncCommonDir/rfb/librfb.a \
+-                   VncCommonDir/Xregion/libXregion.a \
+-                   VncCommonDir/network/libnetwork.a \
+-                   VncCommonDir/rdr/librdr.a
+-
+-#define SiteExtensionLibs vnc/LibraryTargetName(vnc) VncExtLibs
+-
+-#define	ServerTarget(server,subdirs,objects,libs,syslibs)		@@\
+-CCLINK = $(CXXENVSETUP) $(CXX) @@\
+-ServerTargetWithFlags(server,subdirs,objects,libs,syslibs,$(_NOOP_))
+--- /dev/null	2005-02-24 13:02:34.848875488 +0000
++++ vnc-4_1-unixsrc/unix/xc/config/cf/vnc.def.in	2005-03-04 16:13:19.000000000 +0000
+@@ -0,0 +1,37 @@
++#define BuildServersOnly YES
++#define BuildFonts NO
++#define BuildClients NO
++#define BuildDocs NO
++#define BuildPexExt NO
++#define BuildNls NO
++#define BuildXIE NO
++#define BuildGlxExt NO
++#define XnestServer NO
++#define XprtServer NO
++
++#ifdef SunArchitecture
++#define ProjectRoot /usr/openwin
++#define HasGcc2 YES
++#define BuildXKB NO
++#endif
++
++#define HasFreetype2 NO
++#define BuildVNCExt YES
++#define VNCExtDefines -DVNCEXT
++#define SiteExtensionDefines VNCExtDefines
++#define SiteExtensionDirs vnc
++
++#define VncUseFb @USE_FB@
++
++#define VncUnixDir $(TOP)/..
++#define VncCommonDir VncUnixDir/../common
++#define VncExtLibs VncCommonDir/rfb/librfb.a \
++                   VncCommonDir/Xregion/libXregion.a \
++                   VncCommonDir/network/libnetwork.a \
++                   VncCommonDir/rdr/librdr.a
++
++#define SiteExtensionLibs vnc/LibraryTargetName(vnc) VncExtLibs
++
++#define	ServerTarget(server,subdirs,objects,libs,syslibs)		@@\
++CCLINK = $(CXXENVSETUP) $(CXX) @@\
++ServerTargetWithFlags(server,subdirs,objects,libs,syslibs,$(_NOOP_))
+--- vnc-4_1-unixsrc/unix/xc/programs/Xserver/vnc/Xvnc/Imakefile.use-fb	2004-12-01 17:27:58.000000000 +0000
++++ vnc-4_1-unixsrc/unix/xc/programs/Xserver/vnc/Xvnc/Imakefile	2005-03-04 16:13:19.000000000 +0000
+@@ -31,12 +31,19 @@
+ OBJS1 = os2_stubs.o
+ #endif
+ 
++#ifdef VncUseFb
++FB_DEFINES = -DVNC_USE_FB
++ FBINCLUDE = -I../../fb
++#else
++ FBINCLUDE = -I../../cfb
++#endif
++
+ SRCSA =	xvnc.cc stubs.c $(SRCS1) miinitext.c $(SRCS2)
+ 
+ OBJSA =	xvnc.o stubs.o $(OBJS1) miinitext.o $(OBJS2)
+ 
+-INCLUDES = -I. -I.. -I$(XBUILDINCDIR) -I$(FONTINCSRC) \
+-	   -I../../cfb -I../../mfb -I../../mi -I../../include -I../../os  \
++INCLUDES = -I. -I.. -I$(XBUILDINCDIR) -I$(FONTINCSRC) $(FB_DEFINES) \
++	   $(FBINCLUDE) -I../../mfb -I../../mi -I../../include -I../../os  \
+            -I$(EXTINCSRC) -I$(XINCLUDESRC)  -I$(SERVERSRC)/render $(VNCINCLUDE)
+ 
+ DEFINES = $(OS_DEFINES) $(SHMDEF) $(MMAPDEF) \
+--- vnc-4_1-unixsrc/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc.use-fb	2005-02-28 12:59:09.000000000 +0000
++++ vnc-4_1-unixsrc/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc	2005-03-04 16:13:19.000000000 +0000
+@@ -48,8 +48,12 @@
+ #include "X11/Xos.h"
+ #include "scrnintstr.h"
+ #include "servermd.h"
++#ifdef VNC_USE_FB
++#include "fb.h"
++#else
+ #define PSZ 8
+ #include "cfb.h"
++#endif
+ #include "mi.h"
+ #include "mibstore.h"
+ #include "colormapst.h"
+@@ -73,6 +77,7 @@
+ #undef public
+ #undef xor
+ #undef and
++#ifndef VNC_USE_FB
+   extern Bool cfb16ScreenInit(ScreenPtr, pointer, int, int, int, int, int);
+   extern Bool cfb32ScreenInit(ScreenPtr, pointer, int, int, int, int, int);
+   extern Bool cfb16CreateGC(GCPtr);
+@@ -83,6 +88,7 @@
+                             unsigned long, char*);
+   extern void cfb32GetImage(DrawablePtr, int, int, int, int, unsigned int,
+                             unsigned long, char*);
++#endif
+ }
+ 
+ #define XVNCVERSION "Free Edition 4.1"
+@@ -482,7 +488,7 @@
+ }
+ #endif
+ 
+-
++#ifndef VNC_USE_FB
+ static Bool vfbMultiDepthCreateGC(GCPtr   pGC)
+ {
+   switch (vfbBitsPerPixel(pGC->depth))
+@@ -541,6 +547,7 @@
+     break;
+   }
+ }
++#endif
+ 
+ static ColormapPtr InstalledMaps[MAXSCREENS];
+ 
+@@ -811,6 +818,11 @@
+   defaultColorVisualClass
+     = (pvfb->bitsPerPixel > 8) ? TrueColor : PseudoColor;
+ 
++#ifdef VNC_USE_FB
++  if (!fbScreenInit(pScreen, pbits, pvfb->width, pvfb->height,
++                    dpi, dpi, pvfb->paddedWidth, pvfb->bitsPerPixel))
++      return FALSE;
++#else
+   switch (pvfb->bitsPerPixel)
+   {
+   case 1:
+@@ -838,6 +850,7 @@
+   pScreen->CreateGC = vfbMultiDepthCreateGC;
+   pScreen->GetImage = vfbMultiDepthGetImage;
+   pScreen->GetSpans = vfbMultiDepthGetSpans;
++#endif
+ 
+   pScreen->InstallColormap = vfbInstallColormap;
+   pScreen->UninstallColormap = vfbUninstallColormap;
+@@ -883,6 +896,9 @@
+     }
+   }
+ 
++#ifdef VNC_USE_FB
++  ret = fbCreateDefColormap(pScreen);
++#else
+   if (pvfb->bitsPerPixel == 1)
+   {
+     ret = mfbCreateDefColormap(pScreen);
+@@ -891,6 +907,7 @@
+   {
+     ret = cfbCreateDefColormap(pScreen);
+   }
++#endif
+ 
+   miSetZeroLineBias(pScreen, pvfb->lineBias);
+ 
+--- vnc-4_1-unixsrc/unix/configure.in.use-fb	2005-01-11 16:37:17.000000000 +0000
++++ vnc-4_1-unixsrc/unix/configure.in	2005-03-04 16:13:19.000000000 +0000
+@@ -65,6 +65,18 @@
+ AC_SUBST(ZLIB_INCLUDE)
+ AC_SUBST(ZLIB_LIB)
+ 
++AC_ARG_WITH(fb,
++[  --with-fb               use the new 'fb' framebuffer implementation])
++if test "$with_installed_zlib" = yes; then
++  echo "using 'fb' framebuffer"
++  USE_FB=YES
++else
++  echo "using 'mfb' and 'cfb' framebuffer"
++  USE_FB=NO
++fi
++
++AC_SUBST(USE_FB)
++
+ BOILERPLATE=boilerplate.mk
+ 
+ if (sh -c "make --version" 2>/dev/null | grep GNU 2>&1 >/dev/null); then
+@@ -79,4 +91,5 @@
+           vncviewer/Makefile:common.mk:vncviewer/Makefile.in:$BOILERPLATE \
+           vncconfig/Makefile:common.mk:vncconfig/Makefile.in:$BOILERPLATE \
+           vncpasswd/Makefile:common.mk:vncpasswd/Makefile.in:$BOILERPLATE \
++          xc/config/cf/vnc.def \
+ )
+--- vnc-4_1-unixsrc/unix/xc.patch.use-fb	2004-12-01 11:33:15.000000000 +0000
++++ vnc-4_1-unixsrc/unix/xc.patch	2005-03-04 16:19:31.000000000 +0000
+@@ -2,7 +2,7 @@
+ --- xc/programs/Xserver/Imakefile	Fri Jun  6 11:14:39 2003
+ ***************
+ *** 409,412 ****
+---- 409,429 ----
++--- 409,435 ----
+   #endif
+   #endif /* XsunServer */
+ + XCOMM
+@@ -13,12 +13,18 @@
+ + CFB16DIR = cfb16
+ + CFB24DIR = cfb24
+ + CFB32DIR = cfb32
+++ FBDIR = fb
+ + XVNCDDXDIR = vnc/Xvnc
+++ #if VncUseFb
+++ XVNCDIRS = $(STDDIRS) $(FBDIR) $(XVNCDDXDIR) $(DEPDIRS)
+++ XVNCLIBS = PreFbLibs vnc/Xvnc/LibraryTargetName(xvnc) FbPostFbLibs
+++ #else
+ + XVNCDIRS = $(STDDIRS) $(MFBDIR) \
+ + 	    $(CFB8DIR) $(CFB16DIR) $(CFB24DIR) $(CFB32DIR) \
+ + 	    $(XVNCDDXDIR) $(DEPDIRS)
+-+ XVNCOBJS = $(XVNCDDXDIR)/stubs.o $(XVNCDDXDIR)/miinitext.o
+ + XVNCLIBS = PreFbLibs vnc/Xvnc/LibraryTargetName(xvnc) CFBLibs PostFbLibs
+++ #endif
+++ XVNCOBJS = $(XVNCDDXDIR)/stubs.o $(XVNCDDXDIR)/miinitext.o
+ + XVNCSYSLIBS = $(FONTLIBS) $(SYSLIBS)
+ + ServerTarget(Xvnc,$(XVNCDIRS),$(XVNCOBJS), \
+ + 	$(LIBCWRAPPER) $(XVNCLIBS) $(LOADABLEEXTS),$(XVNCSYSLIBS))

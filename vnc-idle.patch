@@ -1,0 +1,11 @@
+--- vnc-4_1-unixsrc/common/rfb/ServerCore.cxx.idle	2005-03-03 15:42:21.000000000 +0000
++++ vnc-4_1-unixsrc/common/rfb/ServerCore.cxx	2005-03-03 23:11:14.000000000 +0000
+@@ -29,7 +29,7 @@
+ ("IdleTimeout",
+  "The number of seconds after which an idle VNC connection will be dropped "
+  "(zero means no timeout)",
+- 3600, 0);
++ 0, 0);
+ rfb::IntParameter rfb::Server::clientWaitTimeMillis
+ ("ClientWaitTimeMillis",
+  "The number of milliseconds to wait for a client which is no longer "

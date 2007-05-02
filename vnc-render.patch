@@ -1,0 +1,210 @@
+--- vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc.render	2006-12-05 12:01:54.000000000 +0100
++++ vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc	2006-12-05 15:41:20.000000000 +0100
+@@ -130,6 +130,13 @@
+ static Bool vfbPixmapDepths[33];
+ static char needswap = 0;
+ static int lastScreen = -1;
++#ifdef RENDER
++#if (defined(__ppc__) || defined(__powerpc__) || defined(__s390__) || defined(__s390x__))
++static Bool Render = TRUE;
++#else
++static Bool Render = FALSE;
++#endif
++#endif
+ 
+ static bool displaySpecified = false;
+ static bool wellKnownSocketsCreated = false;
+@@ -221,6 +228,15 @@
+            VENDOR_STRING);
+     ErrorF("-screen scrn WxHxD     set screen's width, height, depth\n");
+     ErrorF("-pixdepths list-of-int support given pixmap depths\n");
++#ifdef RENDER
++#if (defined(__ppc__) || defined(__powerpc__) || defined(__s390__) || defined(__s390x__))
++    ErrorF("+/-render             turn on/off RENDER extension support"
++          "(default on)\n");
++#else
++    ErrorF("+/-render             turn on/off RENDER extension support"
++          "(default off)\n");
++#endif
++#endif
+     ErrorF("-linebias n            adjust thin line pixelization\n");
+     ErrorF("-blackpixel n          pixel value for black\n");
+     ErrorF("-whitepixel n          pixel value for white\n");
+@@ -317,6 +333,20 @@
+     return ret;
+   }
+ 
++#ifdef RENDER
++  if (strcmp (argv[i], "+render") == 0)        /* +render */
++  {
++    Render = TRUE;
++    return 1;
++  }
++
++  if (strcmp (argv[i], "-render") == 0)        /* -render */
++  {
++    Render = FALSE;
++    return 1;
++  }
++#endif
++
+   if (strcmp (argv[i], "-blackpixel") == 0)	/* -blackpixel n */
+   {
+     Pixel pix;
+@@ -817,7 +847,12 @@
+   if (!fbScreenInit(pScreen, pbits, pvfb->width, pvfb->height,
+                     dpi, dpi, pvfb->paddedWidth, pvfb->bitsPerPixel))
+       return FALSE;
+-#else
++
++#ifdef RENDER
++  if (ret && Render)
++      fbPictureInit(pScreen, 0, 0);
++#endif /* RENDER */
++#else /* VNC_USE_FB */
+   switch (pvfb->bitsPerPixel)
+   {
+   case 1:
+@@ -938,6 +973,19 @@
+     vfbPixmapDepths[vfbScreens[i].depth] = TRUE;
+   }
+ 
++#ifdef RENDER
++  /* RENDER needs a good set of pixmaps. */
++  if (Render) {
++      vfbPixmapDepths[1] = TRUE;
++      vfbPixmapDepths[4] = TRUE;
++      vfbPixmapDepths[8] = TRUE;
++/*    vfbPixmapDepths[15] = TRUE; */
++      vfbPixmapDepths[16] = TRUE;
++      vfbPixmapDepths[24] = TRUE;
++      vfbPixmapDepths[32] = TRUE;
++  }
++#endif
++
+   for (i = 1; i <= 32; i++)
+   {
+     if (vfbPixmapDepths[i])
+--- vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/Imakefile.render	2006-12-05 12:01:54.000000000 +0100
++++ vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/Imakefile	2006-12-05 12:01:54.000000000 +0100
+@@ -19,7 +19,7 @@
+          SRCS = vncExtInit.cc vncHooks.cc XserverDesktop.cc
+          OBJS = vncExtInit.o vncHooks.o XserverDesktop.o
+      INCLUDES = -I../include -I$(EXTINCSRC) -I$(XINCLUDESRC) -I$(FONTINCSRC) \
+-                -I../mfb -I../mi $(VNCINCLUDE)
++                -I../render $(VNCINCLUDE)
+ #if defined(XFree86Version) && XFree86Version >= 4000
+    VNCDEFINES = -DGC_HAS_COMPOSITE_CLIP
+ #endif
+--- vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/module/Imakefile.render	2006-12-05 12:01:54.000000000 +0100
++++ vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/module/Imakefile	2006-12-05 12:01:54.000000000 +0100
+@@ -13,7 +13,7 @@
+     OBJS = vncExtInit.o vncHooks.o xf86vncModule.o XserverDesktop.o
+ INCLUDES = -I.. -I../../include -I$(EXTINCSRC) -I$(XINCLUDESRC) \
+            -I$(FONTINCSRC) -I$(XF86COMSRC) \
+-           $(VNCINCLUDE)
++           -I../../render $(VNCINCLUDE)
+  DEFINES = $(STD_DEFINES) -DGC_HAS_COMPOSITE_CLIP -DXFree86LOADER
+ 
+ LinkSourceFile(vncExtInit.cc,..)
+--- vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/vncHooks.cc.render	2006-05-15 18:56:20.000000000 +0200
++++ vnc-4_1_2-unixsrc/unix/xc/programs/Xserver/vnc/vncHooks.cc	2006-12-05 12:01:54.000000000 +0100
+@@ -29,6 +29,9 @@
+ #include "regionstr.h"
+ #include "dixfontstr.h"
+ #include "colormapst.h"
++#ifdef RENDER
++#include "../../../xorg-server/render/picturestr.h"
++#endif
+ 
+ #ifdef GC_HAS_COMPOSITE_CLIP
+ #define COMPOSITE_CLIP(gc) ((gc)->pCompositeClip)
+@@ -74,6 +77,9 @@
+   StoreColorsProcPtr           StoreColors;
+   DisplayCursorProcPtr         DisplayCursor;
+   ScreenBlockHandlerProcPtr    BlockHandler;
++#ifdef RENDER
++  CompositeProcPtr             Composite;
++#endif
+ } vncHooksScreenRec, *vncHooksScreenPtr;
+ 
+ typedef struct {
+@@ -104,6 +110,13 @@
+ static Bool vncHooksDisplayCursor(ScreenPtr pScreen, CursorPtr cursor);
+ static void vncHooksBlockHandler(int i, pointer blockData, pointer pTimeout,
+                                  pointer pReadmask);
++#ifdef RENDER
++static void vncHooksComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask,
++                              PicturePtr pDst, INT16 xSrc, INT16 ySrc,
++                              INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst,
++                              CARD16 width, CARD16 height);
++#endif
++
+ 
+ // GC "funcs"
+ 
+@@ -229,6 +242,13 @@
+   vncHooksScreen->StoreColors = pScreen->StoreColors;
+   vncHooksScreen->DisplayCursor = pScreen->DisplayCursor;
+   vncHooksScreen->BlockHandler = pScreen->BlockHandler;
++#ifdef RENDER
++  PictureScreenPtr ps;
++  ps = GetPictureScreenIfSet(pScreen);
++  if (ps) {
++    vncHooksScreen->Composite = ps->Composite;
++  }
++#endif
+ 
+   pScreen->CloseScreen = vncHooksCloseScreen;
+   pScreen->CreateGC = vncHooksCreateGC;
+@@ -241,6 +261,11 @@
+   pScreen->StoreColors = vncHooksStoreColors;
+   pScreen->DisplayCursor = vncHooksDisplayCursor;
+   pScreen->BlockHandler = vncHooksBlockHandler;
++#ifdef RENDER
++  if (ps) {
++    ps->Composite = vncHooksComposite;
++  }
++#endif
+ 
+   return TRUE;
+ }
+@@ -470,6 +495,38 @@
+   SCREEN_REWRAP(BlockHandler);
+ }
+ 
++// Composite - needed for RENDER
++
++#ifdef RENDER
++void vncHooksComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask,
++                      PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask,
++                      INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width,
++                      CARD16 height)
++{
++  ScreenPtr pScreen = pDst->pDrawable->pScreen;
++  vncHooksScreenPtr vncHooksScreen = \
++    ((vncHooksScreenPtr)pScreen->devPrivates[vncHooksScreenIndex].ptr);
++  BoxRec box;
++  PictureScreenPtr ps = GetPictureScreen(pScreen);
++
++  if ((xDst >= 0) && (yDst >= 0)) {
++      box.x1 = pDst->pDrawable->x + xDst;
++      box.y1 = pDst->pDrawable->y + yDst;
++      box.x2 = box.x1 + width;
++      box.y2 = box.y1 + height;
++
++      RegionHelper changed(pScreen, &box, 0);
++      vncHooksScreen->desktop->add_changed(changed.reg);
++  }
++
++  ps->Composite = vncHooksScreen->Composite;
++  (*ps->Composite)(op, pSrc, pMask, pDst, xSrc, ySrc,
++                   xMask, yMask, xDst, yDst, width, height);
++  ps->Composite = vncHooksComposite;
++}
++
++#endif /* RENDER */
++
+ 
+ 
+ /////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,18 @@
+--- vnc-4_1_1-unixsrc/unix/xc/programs/Xserver/vnc/vncExtInit.cc.config	2006-10-25 12:35:00.000000000 +0200
++++ vnc-4_1_1-unixsrc/unix/xc/programs/Xserver/vnc/vncExtInit.cc	2006-10-25 12:35:24.000000000 +0200
+@@ -17,6 +17,7 @@
+  */
+ 
+ #include <stdio.h>
++#include "XserverDesktop.h"
+ 
+ extern "C" {
+ #define class c_class
+@@ -48,7 +49,6 @@
+ #undef min
+ #include <network/TcpSocket.h>
+ 
+-#include "XserverDesktop.h"
+ #include "vncHooks.h"
+ #include "vncExtInit.h"
+ 

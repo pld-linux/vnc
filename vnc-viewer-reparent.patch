@@ -1,0 +1,115 @@
+--- vnc-4_1_1-unixsrc/unix/tx/TXWindow.h.viewer-reparent	2005-03-11 15:08:41.000000000 +0000
++++ vnc-4_1_1-unixsrc/unix/tx/TXWindow.h	2005-12-01 17:55:38.000000000 +0000
+@@ -183,6 +183,9 @@
+ 
+   Display* const dpy;
+ 
++  TXEventHandler* eventHandler;
++  long eventMask;
++
+   int xPad, yPad, bevel;
+ 
+ private:
+@@ -195,9 +198,7 @@
+   TXWindow* parent;
+   Window win_;
+   int width_, height_;
+-  TXEventHandler* eventHandler;
+   TXDeleteWindowCallback* dwc;
+-  long eventMask;
+   XSizeHints sizeHints;
+   std::map<Atom,Time> selectionOwnTime;
+   std::map<Atom,bool> selectionOwner_;
+--- vnc-4_1_1-unixsrc/unix/tx/TXViewport.cxx.viewer-reparent	2005-03-11 15:08:41.000000000 +0000
++++ vnc-4_1_1-unixsrc/unix/tx/TXViewport.cxx	2005-12-01 17:55:38.000000000 +0000
+@@ -43,6 +43,21 @@
+   delete vScrollbar;
+ }
+ 
++void TXViewport::reparent(long embed_window)
++{
++    XReparentWindow(dpy, win(), (Window)embed_window, 0, 0);
++    XSelectInput(dpy, embed_window, child->eventMask);
++    if (!eventHandler)
++       this->setEventHandler(this);
++}
++
++void TXViewport::handleEvent(TXWindow* w, XEvent* ev)
++{
++    if (child && child->eventHandler)
++       ((TXEventHandler *)child->eventHandler)->handleEvent(child, ev);
++}
++
++
+ void TXViewport::setChild(TXWindow* child_)
+ {
+   child = child_;
+--- vnc-4_1_1-unixsrc/unix/tx/TXViewport.h.viewer-reparent	2005-03-11 15:08:41.000000000 +0000
++++ vnc-4_1_1-unixsrc/unix/tx/TXViewport.h	2005-12-01 17:55:38.000000000 +0000
+@@ -32,8 +32,8 @@
+ #include "TXWindow.h"
+ #include "TXScrollbar.h"
+ 
+-class TXViewport : public TXWindow, public TXScrollbarCallback,
+-                   public rfb::Timer::Callback {
++class TXViewport : public TXWindow, public TXScrollbarCallback, 
++                   public TXEventHandler, public rfb::Timer::Callback {
+ public:
+   TXViewport(Display* dpy_, int width, int height, TXWindow* parent_=0);
+   virtual ~TXViewport();
+@@ -59,6 +59,12 @@
+   // normally.
+   bool bumpScrollEvent(XMotionEvent* ev);
+ 
++  // reparent the viewport into a new window
++  void reparent(long embed_window);
++
++  // event handler
++  void handleEvent(TXWindow* w, XEvent* ev);
++
+ private:
+   virtual void resizeNotify();
+   virtual void scrollbarPos(int x, int y, TXScrollbar* sb);
+--- vnc-4_1_1-unixsrc/unix/vncviewer/parameters.h.viewer-reparent	2005-03-11 15:08:41.000000000 +0000
++++ vnc-4_1_1-unixsrc/unix/vncviewer/parameters.h	2005-12-01 17:55:38.000000000 +0000
+@@ -37,6 +37,7 @@
+ extern rfb::BoolParameter sendPrimary;
+ extern rfb::BoolParameter fullScreen;
+ extern rfb::StringParameter geometry;
++extern rfb::StringParameter embedParent;
+ 
+ extern char aboutText[];
+ extern char* programName;
+--- vnc-4_1_1-unixsrc/unix/vncviewer/CConn.cxx.viewer-reparent	2005-03-11 15:08:41.000000000 +0000
++++ vnc-4_1_1-unixsrc/unix/vncviewer/CConn.cxx	2005-12-01 17:55:38.000000000 +0000
+@@ -586,10 +586,18 @@
+ 
+ void CConn::reconfigureViewport()
+ {
++  const char * par = embedParent.getValueStr();
+   viewport->setMaxSize(cp.width, cp.height);
+   if (fullScreen) {
+     viewport->resize(DisplayWidth(dpy,DefaultScreen(dpy)),
+                      DisplayHeight(dpy,DefaultScreen(dpy)));
++ } else if (strlen(par) != 0) {
++   XWindowAttributes win_attr;
++   Window w = strtol(par, (char **)NULL, 0);
++
++   XGetWindowAttributes(dpy, w, &win_attr);
++   viewport->reparent(w);
++   viewport->resize(win_attr.width, win_attr.height);
+   } else {
+     int w = cp.width;
+     int h = cp.height;
+--- vnc-4_1_1-unixsrc/unix/vncviewer/vncviewer.cxx.viewer-reparent	2005-12-01 17:54:46.000000000 +0000
++++ vnc-4_1_1-unixsrc/unix/vncviewer/vncviewer.cxx	2005-12-01 17:55:38.000000000 +0000
+@@ -99,6 +99,9 @@
+ /* Support for tunnelling */
+ StringParameter via("via", "Gateway to tunnel via", "");
+ 
++/* Support for reparenting */
++StringParameter embedParent("Parent", "X Window to use as a parent", "");
++
+ char aboutText[256];
+ char* programName;
+ extern char buildtime[];

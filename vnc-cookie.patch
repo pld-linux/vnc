@@ -1,0 +1,27 @@
+--- vnc-4_1-unixsrc/unix/vncserver.cookie	2005-02-23 12:28:18.000000000 +0000
++++ vnc-4_1-unixsrc/unix/vncserver	2005-03-03 22:04:28.000000000 +0000
+@@ -116,18 +116,12 @@
+ $desktopLog = "$vncUserDir/$host:$displayNumber.log";
+ unlink($desktopLog);
+ 
+-# Make an X server cookie - use as the seed the sum of the current time, our
+-# PID and part of the encrypted form of the password.  Ideally we'd use
+-# /dev/urandom, but that's only available on Linux.
+-
+-srand(time+$$+unpack("L",`cat $vncUserDir/passwd`));
+-$cookie = "";
+-for (1..16) {
+-    $cookie .= sprintf("%02x", int(rand(256)) % 256);
+-}
+-    
+-system("xauth -f $xauthorityFile add $host:$displayNumber . $cookie");
+-system("xauth -f $xauthorityFile add $host/unix:$displayNumber . $cookie"); 
++# Make an X server cookie - use mcookie
++$cookie = `/usr/bin/mcookie`;
++open (XAUTH, "|xauth -f $xauthorityFile source -");
++print XAUTH "add $host:$displayNumber . $cookie\n";
++print XAUTH "add $host/unix:$displayNumber . $cookie\n";
++close XAUTH;
+ 
+ if ($opt{'-name'}) {
+     $desktopName = $opt{'-name'};

@@ -1,0 +1,53 @@
+--- vnc-4_1_2-unixsrc/unix/vncviewer/DesktopWindow.cxx.fix	2006-05-15 18:56:20.000000000 +0200
++++ vnc-4_1_2-unixsrc/unix/vncviewer/DesktopWindow.cxx	2006-11-03 15:32:55.000000000 +0100
+@@ -370,9 +370,13 @@
+     break;
+ 
+   case ButtonPress:
++    if(ev->xkey.state & ControlMask)
++      cc->writer()->keyEvent(XK_Control_L, true);
+     handlePointerEvent(Point(ev->xbutton.x, ev->xbutton.y),
+                        (((ev->xbutton.state & 0x1f00) >> 8) |
+                         (1 << (ev->xbutton.button-1))));
++    if(ev->xkey.state & ControlMask)
++      cc->writer()->keyEvent(XK_Control_L, false);
+     break;
+ 
+   case ButtonRelease:
+@@ -387,6 +391,16 @@
+       char keyname[256];
+       XLookupString(&ev->xkey, keyname, 256, &ks, NULL);
+       bool fakeShiftPress = false;
++      bool ctrlPressed = false;
++
++      if((ks == XK_Control_L) || (ks == XK_Control_R))
++	break;
++
++      if(ev->xkey.state & ControlMask)
++      {
++	ctrlPressed = true;
++	cc->writer()->keyEvent(XK_Control_L, true);
++      }
+ 
+       // Turn ISO_Left_Tab into shifted Tab
+       if (ks == XK_ISO_Left_Tab) {
+@@ -402,11 +416,19 @@
+ 
+       if (fakeShiftPress)
+         cc->writer()->keyEvent(XK_Shift_L, false);
++      if(ctrlPressed)
++	cc->writer()->keyEvent(XK_Control_L, false);
+       break;
+     }
+ 
+   case KeyRelease:
+     if (!viewOnly) {
++      KeySym ks;
++      char keyname[256];
++      XLookupString(&ev->xkey, keyname, 256, &ks, NULL);
++      if((ks == XK_Control_L) || (ks == XK_Control_L))
++	break;
++
+       if (downKeysym[ev->xkey.keycode]) {
+         cc->writer()->keyEvent(downKeysym[ev->xkey.keycode], false);
+         downKeysym[ev->xkey.keycode] = 0;

@@ -1,0 +1,186 @@
+--- vnc-4_1-unixsrc/unix/vncviewer/vncviewer.cxx.via	2005-03-03 23:20:33.000000000 +0000
++++ vnc-4_1-unixsrc/unix/vncviewer/vncviewer.cxx	2005-03-03 23:23:33.000000000 +0000
+@@ -41,6 +41,7 @@
+ 
+ using namespace network;
+ using namespace rfb;
++using namespace std;
+ 
+ IntParameter pointerEventInterval("PointerEventInterval",
+                                   "Time in milliseconds to rate-limit"
+@@ -95,6 +96,9 @@
+ StringParameter geometry("geometry", "X geometry specification", "");
+ StringParameter displayname("display", "The X display", "");
+ 
++/* Support for tunnelling */
++StringParameter via("via", "Gateway to tunnel via", "");
++
+ char aboutText[256];
+ char* programName;
+ extern char buildtime[];
+@@ -157,6 +161,61 @@
+   exit(1);
+ }
+ 
++/* Tunnelling support. */
++static void
++interpretViaParam (char **gatewayHost, char **remoteHost,
++                  int *remotePort, char **vncServerName,
++                  int localPort)
++{
++  const int SERVER_PORT_OFFSET = 5900;
++  char *pos = strchr (*vncServerName, ':');
++  if (pos == NULL)
++    *remotePort = SERVER_PORT_OFFSET;
++  else {
++    int portOffset = SERVER_PORT_OFFSET;
++    size_t len;
++    *pos++ = '\0';
++    len = strlen (pos);
++    if (*pos == ':') {
++      /* Two colons is an absolute port number, not an offset. */
++      pos++;
++      len--;
++      portOffset = 0;
++    }
++    if (!len || strspn (pos, "-0123456789") != len )
++      usage ();
++    *remotePort = atoi (pos) + portOffset;
++  }
++
++  if (**vncServerName != '\0')
++    *remoteHost = *vncServerName;
++
++  *gatewayHost = strDup (via.getValueStr ());
++  *vncServerName = new char[50];
++  sprintf (*vncServerName, "localhost::%d", localPort);
++}
++
++static void
++createTunnel (const char *gatewayHost, const char *remoteHost,
++             int remotePort, int localPort)
++{
++  char *cmd = getenv ("VNC_VIA_CMD");
++  char *percent;
++  char lport[10], rport[10];
++  sprintf (lport, "%d", localPort);
++  sprintf (rport, "%d", remotePort);
++  setenv ("G", gatewayHost, 1);
++  setenv ("H", remoteHost, 1);
++  setenv ("R", rport, 1);
++  setenv ("L", lport, 1);
++  if (!cmd)
++    cmd = "/usr/bin/ssh -f -L \"$L\":\"$H\":\"$R\" \"$G\" sleep 20";
++  /* Compatibility with TightVNC's method. */
++  while ((percent = strchr (cmd, '%')) != NULL)
++    *percent = '$';
++  system (cmd);
++}
++
+ int main(int argc, char** argv)
+ {
+   sprintf(aboutText, "VNC Viewer Free Edition 4.1 for X - built %s\n"
+@@ -190,8 +249,6 @@
+       usage();
+     }
+ 
+-    if (vncServerName)
+-      usage();
+     vncServerName = argv[i];
+   }
+ 
+@@ -207,6 +264,19 @@
+     vlog.error("Could not create .vnc directory: environment variable $HOME not set.");
+ 
+   try {
++    /* Tunnelling support. */
++    if (strlen (via.getValueStr ()) > 0) {
++      char *gatewayHost = "";
++      char *remoteHost = "localhost";
++      int localPort = findFreeTcpPort ();
++      int remotePort;
++      if (!vncServerName)
++        usage();
++      interpretViaParam (&gatewayHost, &remoteHost, &remotePort,
++                        &vncServerName, localPort);
++      createTunnel (gatewayHost, remoteHost, remotePort, localPort);
++    }
++
+     Socket* sock = 0;
+ 
+     if (listenMode) {
+--- vnc-4_1-unixsrc/unix/vncviewer/vncviewer.man.via	2005-03-03 23:23:41.000000000 +0000
++++ vnc-4_1-unixsrc/unix/vncviewer/vncviewer.man	2005-03-03 23:24:18.000000000 +0000
+@@ -174,6 +174,23 @@
+ specified as an X11 keysym name (these can be obtained by removing the XK_
+ prefix from the entries in "/usr/include/X11/keysymdef.h").  Default is F8.
+ 
++.TP
++\fB\-via\fR \fIgateway\fR
++Automatically create encrypted TCP tunnel to the \fIgateway\fR machine
++before connection, connect to the \fIhost\fR through that tunnel
++(TightVNC\-specific). By default, this option invokes SSH local port
++forwarding, assuming that SSH client binary can be accessed as
++/usr/bin/ssh. Note that when using the \fB\-via\fR option, the host
++machine name should be specified as known to the gateway machine, e.g.
++"localhost" denotes the \fIgateway\fR, not the machine where vncviewer
++was launched. The environment variable \fIVNC_VIA_CMD\fR can override
++the default tunnel command of
++\fB/usr/bin/ssh\ -f\ -L\ "$L":"$H":"$R"\ "$G"\ sleep\ 20\fR.  The tunnel
++command is executed with the environment variables \fIL\fR, \fIH\fR,
++\fIR\fR, and \fIG\fR taken the values of the local port number, the remote
++host, the port number on the remote host, and the gateway machine
++respectively.
++
+ .SH SEE ALSO
+ .BR Xvnc (1),
+ .BR vncpasswd (1),
+--- vnc-4_1-unixsrc/common/network/TcpSocket.cxx.via	2005-03-03 23:17:55.000000000 +0000
++++ vnc-4_1-unixsrc/common/network/TcpSocket.cxx	2005-03-03 23:19:49.000000000 +0000
+@@ -54,6 +54,29 @@
+ 
+ static rfb::LogWriter vlog("TcpSocket");
+ 
++/* Tunnelling support. */
++int network::findFreeTcpPort (void)
++{
++  int sock, port;
++  struct sockaddr_in addr;
++  memset(&addr, 0, sizeof(addr));
++  addr.sin_family = AF_INET;
++  addr.sin_addr.s_addr = INADDR_ANY;
++
++  if ((sock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
++    throw SocketException ("unable to create socket", errorNumber);
++
++  for (port = TUNNEL_PORT_OFFSET + 99; port > TUNNEL_PORT_OFFSET; port--) {
++    addr.sin_port = htons ((unsigned short) port);
++    if (bind (sock, (struct sockaddr *)&addr, sizeof (addr)) == 0) {
++      close (sock);
++      return port;
++    }
++  }
++  throw SocketException ("no free port in range", 0);
++  return 0;
++}
++
+ 
+ // -=- Socket initialisation
+ static bool socketsInitialised = false;
+--- vnc-4_1-unixsrc/common/network/TcpSocket.h.via	2005-03-03 23:19:58.000000000 +0000
++++ vnc-4_1-unixsrc/common/network/TcpSocket.h	2005-03-03 23:20:21.000000000 +0000
+@@ -32,8 +32,14 @@
+ 
+ #include <list>
+ 
++/* Tunnelling support. */
++#define TUNNEL_PORT_OFFSET 5500
++
+ namespace network {
+ 
++  /* Tunnelling support. */
++  int findFreeTcpPort (void);
++
+   class TcpSocket : public Socket {
+   public:
+     TcpSocket(int sock, bool close=true);
