@@ -76,6 +76,7 @@ BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	gcc-java
+BuildRequires:	fastjar
 BuildRequires:	xorg-lib-libfontenc-devel
 BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
