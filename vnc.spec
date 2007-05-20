@@ -76,7 +76,7 @@ BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	gcc-java
-BuildRequires:	fastjar
+BuildRequires:	jar
 BuildRequires:	xorg-lib-libfontenc-devel
 BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
@@ -303,7 +303,7 @@ cd common
 cd ..
 
 cd vnc-%{java_vncver}-javasrc/java
-make JAVAC="gcj -C" JAR=fastjar
+make JAVAC="gcj -C" JAR=jar
 cd ../..
 
 %{__make} -C unix
