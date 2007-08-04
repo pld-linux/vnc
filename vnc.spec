@@ -15,7 +15,7 @@ Summary(pt_BR.UTF-8):	Sistema de controle remoto
 Name:		vnc
 Version:	4.1.2
 %define		_ver	%(echo %{version} | tr . _)
-Release:	1
+Release:	2
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://fresh.t-systems-sfr.com/linux/src/vnc-%{_ver}-unixsrc.tar.gz
@@ -112,7 +112,7 @@ BuildRequires:	xorg-proto-videoproto-devel
 BuildRequires:	xorg-util-util-macros >= 0.99.2
 BuildRequires:	zlib-devel
 Provides:	vnc-client
-Obsoletes:	tightvnc
+Conflicts:	tightvnc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautocompressdoc	*.GIF
