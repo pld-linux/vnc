@@ -156,7 +156,7 @@ Group:		X11/Applications/Networking
 Requires:	%{name}-utils = %{version}-%{release}
 Requires:	policycoreutils
 Requires:	xinitrc-ng
-Obsoletes:	tightvnc-server
+Conflicts:	tightvnc-server
 
 %description server
 VNC stands for Virtual Network Computing. It is, in essence, a remote
@@ -205,7 +205,7 @@ Rozszerzenie VNC dla servera Xów.
 Summary:	Additional utilities for VNC
 Summary(pl.UTF-8):	Dodatkowe narzędzia do VNC
 Group:		X11/Applications/Networking
-Obsoletes:	tightvnc-utils
+Conflicts:	tightvnc-utils
 
 %description utils
 This package contains additional VNC utilities: vncconnect and
