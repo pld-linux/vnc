@@ -1,35 +1,31 @@
-#
-# Conditional build:
-#
 %define		docver		4.0
 %define		java_vncver	4_1
-%define         mesa_version    6.5.3
+%define		mesa_version    6.5.3
 %define		xserver_ver	1.3.0.0
-
 %define		xname		xorg-xserver-server
 
+%define		_ver	%(echo %{version} | tr . _)
 Summary:	Virtual Network Computing
 Summary(es.UTF-8):	Sistema de control remoto
 Summary(pl.UTF-8):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR.UTF-8):	Sistema de controle remoto
 Name:		vnc
 Version:	4.1.2
-%define		_ver	%(echo %{version} | tr . _)
 Release:	2
 License:	GPL
 Group:		X11/Applications/Networking
-Source0:	http://fresh.t-systems-sfr.com/linux/src/vnc-%{_ver}-unixsrc.tar.gz
+Source0:	http://fresh.t-systems-sfr.com/linux/src/%{name}-%{_ver}-unixsrc.tar.gz
 # Source0-md5:	cf9a6fe8f592286b5e0fdde686504ffb
 Source1:	http://www.realvnc.com/dist/%{name}-%{docver}-documentation.tar.gz
 # Source1-md5:	eb3bf940b88cabb238580e2ba31b927b
-Source2:	http://fresh.t-systems-sfr.com/unix/src/misc/vnc-%{java_vncver}-javasrc.tar.gz
+Source2:	http://fresh.t-systems-sfr.com/unix/src/misc/%{name}-%{java_vncver}-javasrc.tar.gz
 # Source2-md5:	9407ce1f215aefca77bef12670745280
-Source3:	vncviewer.desktop
-Source4:	vnc-16x16.png
-Source5:	vnc-24x24.png
-Source6:	vnc-48x48.png
-Source7:	vncserver.init
-Source8:	vncserver.sysconfig
+Source3:	%{name}viewer.desktop
+Source4:	%{name}-16x16.png
+Source5:	%{name}-24x24.png
+Source6:	%{name}-48x48.png
+Source7:	%{name}server.init
+Source8:	%{name}server.sysconfig
 #Sources and patches above 100 belong to xserver
 Source100:	http://xorg.freedesktop.org/releases/individual/xserver/xorg-server-%{xserver_ver}.tar.bz2
 # Source100-md5:	a51a7d482e3c689394755bb17bda8526
@@ -73,22 +69,22 @@ Patch104:	%{xname}-mesa.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
 BuildRequires:	gcc-java
 BuildRequires:	jar
-BuildRequires:	xorg-lib-libfontenc-devel
+BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
 BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXaw-devel
 BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libXfont-devel
 BuildRequires:	xorg-lib-libXmu-devel
 BuildRequires:	xorg-lib-libXtst-devel
-BuildRequires:	xorg-lib-libXfont-devel
+BuildRequires:	xorg-lib-libfontenc-devel
 BuildRequires:	xorg-lib-libxkbfile-devel
 BuildRequires:	xorg-lib-xtrans-devel
-BuildRequires:	xorg-proto-compositeproto-devel >= 0.3
 BuildRequires:	xorg-proto-bigreqsproto-devel
+BuildRequires:	xorg-proto-compositeproto-devel >= 0.3
 BuildRequires:	xorg-proto-damageproto-devel >= 1.1
 BuildRequires:	xorg-proto-fixesproto-devel >= 4.0
 BuildRequires:	xorg-proto-fontsproto-devel
@@ -100,6 +96,7 @@ BuildRequires:	xorg-proto-recordproto-devel
 BuildRequires:	xorg-proto-resourceproto-devel
 BuildRequires:	xorg-proto-scrnsaverproto-devel >= 1.1.0
 BuildRequires:	xorg-proto-trapproto-devel
+BuildRequires:	xorg-proto-videoproto-devel
 BuildRequires:	xorg-proto-xcmiscproto-devel
 BuildRequires:	xorg-proto-xextproto-devel
 BuildRequires:	xorg-proto-xf86bigfontproto-devel
@@ -108,7 +105,6 @@ BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 BuildRequires:	xorg-proto-xineramaproto-devel
 BuildRequires:	xorg-proto-xproto-devel
-BuildRequires:	xorg-proto-videoproto-devel
 BuildRequires:	xorg-util-util-macros >= 0.99.2
 BuildRequires:	zlib-devel
 Provides:	vnc-client
@@ -210,8 +206,8 @@ Conflicts:	tightvnc-utils
 %description utils
 This package contains additional VNC utilities: vncconnect and
 vncpasswd. vncconnect tells Xvnc server to connect to a listening VNC
-viewer. vncpasswd generates password file (both on server and
-viewer side).
+viewer. vncpasswd generates password file (both on server and viewer
+side).
 
 %description utils -l pl.UTF-8
 Ten pakiet zawiera dodatkowe narzędzia VNC: vncconnect i vncpasswd.
@@ -290,7 +286,7 @@ cd unix
 %{__autoconf}
 %configure \
 	--with-installed-zlib \
-	--with-x 
+	--with-x
 cd ..
 
 cd common
@@ -303,7 +299,7 @@ cd common
 cd ..
 
 cd vnc-%{java_vncver}-javasrc/java
-make JAVAC="gcj -C" JAR=jar
+%{__make} JAVAC="gcj -C" JAR=jar
 cd ../..
 
 %{__make} -C unix
@@ -376,7 +372,7 @@ fi
 %attr(755,root,root) %{_bindir}/vncviewer
 %{_mandir}/man1/vncviewer.1*
 %{_desktopdir}/vncviewer.desktop
-%{_datadir}/icons/hicolor/*/apps/vnc.png
+%{_iconsdir}/hicolor/*/apps/vnc.png
 
 %files server
 %defattr(644,root,root,755)
