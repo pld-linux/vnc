@@ -1,0 +1,4 @@
+- spec adapterized,
+- added gzipping %doc,
+- make spec %{debug} ready,
+- some other cosmetics.
