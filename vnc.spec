@@ -64,8 +64,6 @@ Patch100:	%{xname}-ncurses.patch
 Patch101:	%{xname}-xwrapper.patch
 # nasty hack for http://gcc.gnu.org/bugzilla/show_bug.cgi?id=30052
 Patch102:	%{xname}-gcc-x86_64-workaround.patch
-Patch103:	%{xname}-drop-GLinterface.patch
-Patch104:	%{xname}-mesa.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -237,8 +235,6 @@ cd xorg-server
 %ifarch %{x8664} i486
 %patch102 -p1
 %endif
-%patch103 -p2
-%patch104 -p2
 cd ../..
 
 %patch0 -p1
