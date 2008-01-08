@@ -237,7 +237,8 @@ cd xorg-server
 %patch102 -p1
 
 # xserver uses pixman-1 API/ABI so put that explictly here
-sed -i -e 's#<pixman\.h#<pixman-1/pixman.h#g' ./fb/fb.h ./include/miscstruct.h ./render/picture.h
+# update: we use local pixman.h copy too, see below
+sed -i -e 's#<pixman\.h>#"pixman.h"#g' fb/fb.h include/miscstruct.h render/picture.h
 %endif
 cd ../..
 
@@ -273,13 +274,14 @@ cp -a \
 	unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc \
 	unix/xc/programs/Xserver/Xvnc.man \
 	unix/xc/programs/Xserver/vnc/*.{h,cc} \
-	unix/xorg-server-*/{cfb/cfb.h,fb/fb.h,fb/fbrop.h} \
-	unix/xorg-server-*/hw/vnc/
+	unix/xorg-server/{cfb/cfb.h,fb/fb.h,fb/fbrop.h} \
+	unix/xorg-server/hw/vnc/
+cp /usr/include/pixman-1/pixman.h \
+	unix/xorg-server/include
 
 # symbol clash with vnc code
-# TODO pixman headers have same problem...
 sed -i -e 's,xor,c_xor,' -e 's,and,c_and,' \
-	unix/xorg-server-*/hw/vnc/{cfb,fb,fbrop}.h
+	unix/xorg-server/{hw/vnc/{cfb,fb,fbrop}.h,include/pixman.h}
 
 %build
 cd unix
