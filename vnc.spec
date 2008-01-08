@@ -1,7 +1,7 @@
 %define		docver		4.0
 %define		java_vncver	4_1
 %define		mesa_version    6.5.3
-%define		xserver_ver	1.3.0.0
+%define		xserver_ver	1.4.0.90
 %define		xname		xorg-xserver-server
 
 %define		_ver	%(echo %{version} | tr . _)
@@ -28,7 +28,7 @@ Source7:	%{name}server.init
 Source8:	%{name}server.sysconfig
 #Sources and patches above 100 belong to xserver
 Source100:	http://xorg.freedesktop.org/releases/individual/xserver/xorg-server-%{xserver_ver}.tar.bz2
-# Source100-md5:	a51a7d482e3c689394755bb17bda8526
+# Source100-md5:	bb16e969850dbb5d3805cb88d35656d0
 Source101:	http://dl.sourceforge.net/mesa3d/MesaLib-%{mesa_version}.tar.bz2
 # Source101-md5:	46359457147c469745f24b5074a186f0
 Source102:	xserver.pamd
