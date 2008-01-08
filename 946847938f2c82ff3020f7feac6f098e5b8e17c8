@@ -1,0 +1,4 @@
+- Release 5.
+- Server Requires: xinitrc, vnc-utils, XFree86-fonts-base,
+  XFree86-fonts. This sucks, but sitll is true.
+  NOTE: In fact it requires some window manager and more.
