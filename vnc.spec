@@ -71,6 +71,7 @@ BuildRequires:	gcc-java
 BuildRequires:	jar
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
+BuildRequires:	pixman-devel >= 0.9.5
 BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXaw-devel
@@ -234,6 +235,9 @@ cd xorg-server
 %patch101 -p0
 %ifarch %{x8664} i486
 %patch102 -p1
+
+# xserver uses pixman-1 API/ABI so put that explictly here
+sed -i -e 's#<pixman\.h#<pixman-1/pixman.h#g' ./fb/fb.h ./include/miscstruct.h ./render/picture.h
 %endif
 cd ../..
 
@@ -272,6 +276,8 @@ cp -a \
 	unix/xorg-server-*/{cfb/cfb.h,fb/fb.h,fb/fbrop.h} \
 	unix/xorg-server-*/hw/vnc/
 
+# symbol clash with vnc code
+# TODO pixman headers have same problem...
 sed -i -e 's,xor,c_xor,' -e 's,and,c_and,' \
 	unix/xorg-server-*/hw/vnc/{cfb,fb,fbrop}.h
 
