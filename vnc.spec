@@ -19,7 +19,7 @@ Summary(pl.UTF-8):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR.UTF-8):	Sistema de controle remoto
 Name:		vnc
 Version:	4.1.2
-Release:	3
+Release:	4
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://fresh.t-systems-sfr.com/linux/src/%{name}-%{_ver}-unixsrc.tar.gz
@@ -74,6 +74,7 @@ Patch101:	%{xname}-xwrapper.patch
 # nasty hack for http://gcc.gnu.org/bugzilla/show_bug.cgi?id=30052
 Patch102:	%{xname}-gcc-x86_64-workaround.patch
 Patch103:	%{xname}-link.patch
+Patch104:	ftp://ftp.freedesktop.org/pub/xorg/X11R7.3/patches/xorg-xserver-1.4-multiple-overflows.diff
 URL:		http://www.realvnc.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -247,6 +248,7 @@ cd xorg-server
 %patch102 -p1
 %endif
 %patch103 -p1
+%patch104 -p1
 
 # xserver uses pixman-1 API/ABI so put that explictly here
 # update: we use local pixman.h copy too, see below
