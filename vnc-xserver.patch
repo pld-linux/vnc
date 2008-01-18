@@ -1,0 +1,53 @@
+diff -Nur vnc-4_1_2-unixsrc.orig/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc vnc-4_1_2-unixsrc.chng/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc
+--- vnc-4_1_2-unixsrc.orig/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc	2008-01-17 12:13:53.000000000 +0100
++++ vnc-4_1_2-unixsrc.chng/unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc	2008-01-18 00:47:11.000000000 +0100
+@@ -1026,17 +1026,6 @@
+ int SelectWaitTime = 10000; /* usec */
+ #endif
+ 
+-Bool LegalModifier(unsigned int key, DevicePtr pDev)
+-{
+-  return TRUE;
+-}
+-
+-void ProcessInputEvents()
+-{
+-  mieqProcessInputEvents();
+-  miPointerUpdate();
+-}
+-
+ /* Fairly standard US PC Keyboard */
+ 
+ #define VFB_MIN_KEY 8
+@@ -1226,8 +1215,11 @@
+     map[3] = 3;
+     map[4] = 4;
+     map[5] = 5;
+-    InitPointerDeviceStruct(pDev, map, 5, miPointerGetMotionEvents,
+-                            (PtrCtrlProcPtr)NoopDDA, miPointerGetMotionBufferSize());
++//    InitPointerDeviceStruct(pDev, map, 5, miPointerGetMotionEvents,
++//                            (PtrCtrlProcPtr)NoopDDA, miPointerGetMotionBufferSize());
++    InitPointerDeviceStruct(pDev, map, 5, GetMotionHistory,
++                            (PtrCtrlProcPtr)NoopDDA, GetMotionHistorySize(), 2);
++            
+     break;
+ 
+   case DEVICE_ON:
+@@ -1243,17 +1235,3 @@
+   }
+   return Success;
+ }
+-
+-// InitInput is called after InitExtensions, so we're guaranteed that
+-// vncExtensionInit() has already been called.
+-
+-void InitInput(int argc, char *argv[])
+-{
+-  DeviceIntPtr p, k;
+-  p = AddInputDevice(vfbMouseProc, TRUE);
+-  k = AddInputDevice(vfbKeybdProc, TRUE);
+-  RegisterPointerDevice(p);
+-  RegisterKeyboardDevice(k);
+-  miRegisterPointerDevice(screenInfo.screens[0], p);
+-  (void)mieqInit ((DevicePtr)k, (DevicePtr)p);
+-}
