@@ -1,3 +1,11 @@
+
+# ABI versions, see hw/xfree86/common/xf86Module.h
+%define	xorg_xserver_server_ansic_abi		0.3
+%define	xorg_xserver_server_extension_abi	0.3
+%define	xorg_xserver_server_font_abi		0.5
+%define	xorg_xserver_server_videodrv_abi	2.0
+%define	xorg_xserver_server_xinput_abi		2.0
+
 %define		docver		4.0
 %define		java_vncver	4_1
 %define		mesa_version    6.5.3
@@ -11,7 +19,7 @@ Summary(pl.UTF-8):	Virtual Network Computing - zdalny desktop
 Summary(pt_BR.UTF-8):	Sistema de controle remoto
 Name:		vnc
 Version:	4.1.2
-Release:	2
+Release:	3
 License:	GPL
 Group:		X11/Applications/Networking
 Source0:	http://fresh.t-systems-sfr.com/linux/src/%{name}-%{_ver}-unixsrc.tar.gz
@@ -59,11 +67,13 @@ Patch23:	%{name}-210617.patch
 Patch24:	%{name}-102434.patch
 Patch25:	%{name}-config.patch
 Patch26:	%{name}-render.patch
+Patch27:	%{name}-xserver.patch
 #Sources and patches above 100 belong to xserver
 Patch100:	%{xname}-ncurses.patch
 Patch101:	%{xname}-xwrapper.patch
 # nasty hack for http://gcc.gnu.org/bugzilla/show_bug.cgi?id=30052
 Patch102:	%{xname}-gcc-x86_64-workaround.patch
+Patch103:	%{xname}-link.patch
 URL:		http://www.realvnc.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -235,11 +245,14 @@ cd xorg-server
 %patch101 -p0
 %ifarch %{x8664} i486
 %patch102 -p1
+%endif
+%patch103 -p1
 
 # xserver uses pixman-1 API/ABI so put that explictly here
 # update: we use local pixman.h copy too, see below
 sed -i -e 's#<pixman\.h>#"pixman.h"#g' fb/fb.h include/miscstruct.h render/picture.h
-%endif
+
+rm hw/xprint/{miinitext-wrapper,dpmsstubs-wrapper}.c
 cd ../..
 
 %patch0 -p1
@@ -269,6 +282,7 @@ cd ../..
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1
+%patch27 -p1
 
 cp -a \
 	unix/xc/programs/Xserver/vnc/Xvnc/xvnc.cc \
@@ -310,6 +324,34 @@ cd ../..
 %{__make} -C common
 
 cd unix/xorg-server
+API=$(awk '/#define ABI_ANSIC_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
+if [ $API != %{xorg_xserver_server_ansic_abi} ]; then
+	echo "Set %%define xorg_xserver_server_ansic_abi to $API and rerun."
+	exit 1
+fi
+
+API=$(awk '/#define ABI_EXTENSION_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
+if [ $API != %{xorg_xserver_server_extension_abi} ]; then
+	echo "Set %%define xorg_xserver_server_extension_abi to $API and rerun."
+	exit 1
+fi
+
+API=$(awk '/#define ABI_FONT_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
+if [ $API != %{xorg_xserver_server_font_abi} ]; then
+	echo "Set %%define xorg_xserver_server_font_abi to $API and rerun."
+	exit 1
+fi
+API=$(awk '/#define ABI_VIDEODRV_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
+if [ $API != %{xorg_xserver_server_videodrv_abi} ]; then
+	echo "Set %%define xorg_xserver_server_videodrv_abi to $API and rerun."
+	exit 1
+fi
+API=$(awk '/#define ABI_XINPUT_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
+if [ $API != %{xorg_xserver_server_xinput_abi} ]; then
+	echo "Set %%define xorg_xserver_server_xinput_abi to $API and rerun."
+	exit 1
+fi
+
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
@@ -318,15 +360,27 @@ cd unix/xorg-server
 %configure \
 	--with-os-name="PLD/Linux" \
 	--with-os-vendor="PLD/Team" \
+	\
 	--enable-dga \
+	--enable-glx \
+	--enable-install-libxf86config \
+	--enable-xvfb \
+	--enable-xsecurity \
+	\
 	--disable-builddocs \
-	--disable-lbx \
-	--disable-xevie \
 	--disable-dmx \
 	--disable-dri \
-	--disable-xprint \
+	--disable-kdrive \
+	--disable-lbx \
 	--disable-static \
+	--disable-xace \
+	--disable-xephyr \
+	--disable-xevie \
+	--disable-xnest \
 	--disable-xorgcfg \
+	--disable-xprint \
+	--disable-xwin \
+	\
 	--with-default-font-path="%{_fontsdir}/misc,%{_fontsdir}/TTF,%{_fontsdir}/OTF,%{_fontsdir}/Type1,%{_fontsdir}/100dpi,%{_fontsdir}/75dpi" \
 	--with-mesa-source="`pwd`/../../Mesa-%{mesa_version}" \
 	--with-xkb-output=/var/lib/xkb
