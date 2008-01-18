@@ -41,7 +41,7 @@
    wellKnownSocketsCreated = true;
 --- /dev/null	2006-06-13 10:12:45.634275750 -0400
 +++ vnc-4_1_2-unixsrc/unix/xorg-server/hw/vnc/Makefile.am	2006-06-13 17:47:02.000000000 -0400
-@@ -0,0 +1,85 @@
+@@ -0,0 +1,89 @@
 +noinst_LTLIBRARIES = libvnccommon.la
 +libvnccommon_la_SOURCES = \
 +		RegionHelper.h     \
@@ -65,16 +65,17 @@
 +
 +Xvnc_SOURCES = \
 +		xvnc.cc \
++		$(top_srcdir)/hw/vfb/InitInput.c \
 +		$(top_srcdir)/Xext/dpmsstubs.c \
 +		$(top_srcdir)/Xi/stubs.c \
 +		$(top_srcdir)/mi/miinitext.c \
-+		$(top_srcdir)/fb/fbcmap.c
++		$(top_srcdir)/fb/fbcmap_mi.c
 +
 +Xvnc_LDADD =	$(XORG_CORE_LIBS) \
 +		$(XORG_LIBS) \
 +		$(XSERVER_LIBS) \
 +		../../fb/libfb.la \
-+		../../mi/libminimi.la \
++		../../mi/libmi.la \
 +		../../render/librender.la \
 +		../../xkb/libxkbstubs.la \
 +		../../dbe/libdbe.la \
@@ -83,17 +84,20 @@
 +		../../record/librecord.la \
 +		../xfree86/os-support/libxorgos.la \
 +		../../os/libos.la \
-+		../xfree86/common/libcommon.la \
 +		-lX11 \
 +		libvnccommon.la \
 +		../../../../common/rfb/librfb.a \
 +		../../../../common/rdr/librdr.a \
 +		../../../../common/network/libnetwork.a \
 +		../../../../common/Xregion/libXregion.a
++#		../xfree86/common/libcommon.la
 +
 +Xvnc_CFLAGS =  -DHAVE_DIX_CONFIG_H \
 +		-DNO_HW_ONLY_EXTS \
 +		-DNO_MODULE_EXTS \
++		-I../../Xext \
++		-I../../mi \
++		-I../../render \
 +		-DXFree86Server -DVNCEXT
 +
 +Xvnc_CXXFLAGS = $(Xvnc_CFLAGS) \
@@ -103,7 +107,7 @@
 +		-I../../../../common \
 +		-I../../../vncconfig \
 +		-I../../mi \
-+		-I ../../render \
++		-I../../render \
 +		-I/usr/include/X11
 +
 +libvnc_la_LTLIBRARIES = libvnc.la
