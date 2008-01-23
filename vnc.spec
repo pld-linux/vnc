@@ -1,11 +1,4 @@
 
-# ABI versions, see hw/xfree86/common/xf86Module.h
-%define	xorg_xserver_server_ansic_abi		0.3
-%define	xorg_xserver_server_extension_abi	0.3
-%define	xorg_xserver_server_font_abi		0.5
-%define	xorg_xserver_server_videodrv_abi	2.0
-%define	xorg_xserver_server_xinput_abi		2.0
-
 %define		docver		4.0
 %define		java_vncver	4_1
 %define		mesa_version    6.5.3
@@ -326,34 +319,6 @@ cd ../..
 %{__make} -C common
 
 cd unix/xorg-server
-API=$(awk '/#define ABI_ANSIC_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
-if [ $API != %{xorg_xserver_server_ansic_abi} ]; then
-	echo "Set %%define xorg_xserver_server_ansic_abi to $API and rerun."
-	exit 1
-fi
-
-API=$(awk '/#define ABI_EXTENSION_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
-if [ $API != %{xorg_xserver_server_extension_abi} ]; then
-	echo "Set %%define xorg_xserver_server_extension_abi to $API and rerun."
-	exit 1
-fi
-
-API=$(awk '/#define ABI_FONT_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
-if [ $API != %{xorg_xserver_server_font_abi} ]; then
-	echo "Set %%define xorg_xserver_server_font_abi to $API and rerun."
-	exit 1
-fi
-API=$(awk '/#define ABI_VIDEODRV_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
-if [ $API != %{xorg_xserver_server_videodrv_abi} ]; then
-	echo "Set %%define xorg_xserver_server_videodrv_abi to $API and rerun."
-	exit 1
-fi
-API=$(awk '/#define ABI_XINPUT_VERSION/ { split($0,A,/[(,)]/); printf("%d.%d",A[2], A[3]); }' hw/xfree86/common/xf86Module.h)
-if [ $API != %{xorg_xserver_server_xinput_abi} ]; then
-	echo "Set %%define xorg_xserver_server_xinput_abi to $API and rerun."
-	exit 1
-fi
-
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
