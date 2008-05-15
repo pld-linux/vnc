@@ -322,16 +322,15 @@
 +
 --- os/Makefile.am	2005-12-06 16:50:35.000000000 +0100
 +++ os/Makefile.am	2006-02-05 14:36:53.211755250 +0100
-@@ -29,6 +29,11 @@
+@@ -24,6 +24,11 @@
  	xprintf.c	\
- 	$(XORG_SOURCES)
+ 	$(XORG_SRCS)
  
 +bin_PROGRAMS = Xwrapper
 +Xwrapper_SOURCES = wrapper.c
 +Xwrapper_CFLAGS = -DUSE_PAM -DXSERVER_PATH=\"/usr/bin/Xorg\" $(AM_CFLAGS)
 +Xwrapper_LDADD = -lpam_misc
 +
- if XCSECURITY
- libos_la_SOURCES += $(XCSECURITY_SOURCES)
+ if SECURE_RPC
+ libos_la_SOURCES += $(SECURERPC_SRCS)
  endif
-
