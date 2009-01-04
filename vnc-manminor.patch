@@ -1,0 +1,25 @@
+diff -up vnc-4_1_2-unixsrc/unix/vncviewer/vncviewer.man.pedantic vnc-4_1_2-unixsrc/unix/vncviewer/vncviewer.man
+--- vnc-4_1_2-unixsrc/unix/vncviewer/vncviewer.man.pedantic	2008-03-13 14:55:08.000000000 +0100
++++ vnc-4_1_2-unixsrc/unix/vncviewer/vncviewer.man	2008-03-13 14:55:58.000000000 +0100
+@@ -8,6 +8,10 @@ vncviewer \- VNC viewer for X
+ .br
+ .B vncviewer
+ .RI [ options ] 
++.RI [ host ][:: port ]
++.br
++.B vncviewer
++.RI [ options ] 
+ .B \-listen
+ .RI [ port ]
+ .SH DESCRIPTION
+@@ -182,8 +186,8 @@ prefix from the entries in "/usr/include
+ .TP
+ \fB\-via\fR \fIgateway\fR
+ Automatically create encrypted TCP tunnel to the \fIgateway\fR machine
+-before connection, connect to the \fIhost\fR through that tunnel
+-(TightVNC\-specific). By default, this option invokes SSH local port
++before connection, connect to the \fIhost\fR through that tunnel. By default,
++this option invokes SSH local port
+ forwarding, assuming that SSH client binary can be accessed as
+ /usr/bin/ssh. Note that when using the \fB\-via\fR option, the host
+ machine name should be specified as known to the gateway machine, e.g.

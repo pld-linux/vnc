@@ -1,0 +1,33 @@
+diff -up vnc-4_1_2-unixsrc/unix/vncserver.rh212985 vnc-4_1_2-unixsrc/unix/vncserver
+--- vnc-4_1_2-unixsrc/unix/vncserver.rh212985	2008-07-16 13:55:29.000000000 +0200
++++ vnc-4_1_2-unixsrc/unix/vncserver	2008-07-16 14:17:53.000000000 +0200
+@@ -168,11 +168,25 @@ $cmd .= " >> " . &quotedString($desktopL
+ # Run $cmd and record the process ID.
+ 
+ $pidFile = "$vncUserDir/$host:$displayNumber.pid";
+-system("$cmd & echo \$! >$pidFile");
++system(
++"rm -f $pidFile
++ $cmd &
++ PID_TEMP=\$!
++ PID_NUM=\$PID_TEMP
++
++ # Give Xvnc a chance to start up
++
++ sleep 3;
++
++ if ps -p \$PID_NUM -o comm= | grep -q Xvnc; then
++     echo \$PID_NUM > $pidFile
++ fi"
++);
+ 
+-# Give Xvnc a chance to start up
+-
+-sleep(3); 
++if (!(-e "$pidFile")) {
++    warn "Unable to start Xvnc, exiting\n";
++    exit;
++}
+ 
+ warn "\nNew '$desktopName' desktop is $host:$displayNumber\n\n";
+ 
