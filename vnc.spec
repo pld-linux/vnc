@@ -113,6 +113,7 @@ BuildRequires:	xorg-proto-xcmiscproto-devel
 BuildRequires:	xorg-proto-xextproto-devel
 BuildRequires:	xorg-proto-xf86bigfontproto-devel
 BuildRequires:	xorg-proto-xf86dgaproto-devel
+BuildRequires:	xorg-proto-xf86driproto-devel
 BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 BuildRequires:	xorg-proto-xineramaproto-devel
