@@ -19,3 +19,13 @@ reverted:
  
  /* InstallManPage(Xvfb,$(MANDIR)) */
  DependTarget()
+--- vnc-4_1_3-unixsrc.orig/unix/xorg-server/configure.ac	2009-01-02 21:37:44.000000000 +0100
++++ vnc-4_1_3-unixsrc.chng/unix/xorg-server/configure.ac	2009-01-02 21:53:58.000000000 +0100
+@@ -54,6 +54,7 @@
+ AC_CONFIG_HEADERS(include/kdrive-config.h)
+ 
+ AC_PROG_CC
++AC_PROG_CXX
+ AM_PROG_AS
+ AC_PROG_INSTALL
+ AC_PROG_LN_S
