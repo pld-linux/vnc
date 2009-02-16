@@ -75,6 +75,9 @@ Patch36:	%{name}-build.patch
 Patch100:	%{xname}-ncurses.patch
 Patch101:	%{xname}-xwrapper.patch
 URL:		http://www.realvnc.com/
+#  https://rhn.redhat.com/errata/RHSA-2009-0261.html
+# Patch in Fedora repo:
+BuildRequires:	security(CVE-2008-4770)
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gcc-java
