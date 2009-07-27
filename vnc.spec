@@ -58,19 +58,20 @@ Patch20:	%{name}-vsnprintf.patch
 Patch21:	%{name}-24bit.patch
 Patch22:	%{name}-gcc43.patch
 Patch23:	%{name}-xorg.patch
-Patch24:	%{name}-privates.patch
-Patch25:	%{name}-mieq.patch
-Patch26:	%{name}-allocate.patch
-Patch27:	%{name}-paint.patch
-Patch28:	%{name}-selections.patch
-Patch29:	%{name}-manminor.patch
-Patch30:	%{name}-clipboard.patch
-Patch31:	%{name}-scrollbars.patch
-Patch32:	%{name}-bounds.patch
-Patch33:	%{name}-includes.patch
-Patch34:	%{name}-viewerIPv6.patch
-Patch35:	%{name}-rh212985.patch
-Patch36:	%{name}-build.patch
+Patch24:	%{name}-xinerama.patch
+Patch25:	%{name}-privates.patch
+Patch26:	%{name}-mieq.patch
+Patch27:	%{name}-allocate.patch
+Patch28:	%{name}-paint.patch
+Patch29:	%{name}-selections.patch
+Patch30:	%{name}-manminor.patch
+Patch31:	%{name}-clipboard.patch
+Patch32:	%{name}-scrollbars.patch
+Patch33:	%{name}-bounds.patch
+Patch34:	%{name}-includes.patch
+Patch35:	%{name}-viewerIPv6.patch
+Patch36:	%{name}-rh212985.patch
+Patch37:	%{name}-build.patch
 #Sources and patches above 100 belong to xserver
 Patch100:	%{xname}-ncurses.patch
 Patch101:	%{xname}-xwrapper.patch
@@ -282,6 +283,7 @@ cd ../..
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
+%patch24 -p1
 
 mkdir -p unix/xorg-server/hw/vnc
 cp %{SOURCE9} unix/xorg-server/hw/vnc/Makefile.am
@@ -299,9 +301,8 @@ sed -i -e 's,xor,c_xor,' -e 's,and,c_and,' \
 	unix/xorg-server/{hw/vnc/{cfb,fb,fbrop}.h,include/pixman.h}
 
 cd unix/xorg-server/hw/vnc
-%patch24 -p1
-cd -
 %patch25 -p1
+cd -
 %patch26 -p1
 %patch27 -p1
 %patch28 -p1
@@ -313,7 +314,7 @@ cd -
 %patch34 -p1
 %patch35 -p1
 %patch36 -p1
-
+%patch37 -p1
 
 %build
 cd common

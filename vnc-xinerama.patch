@@ -1,0 +1,192 @@
+diff -urN vnc-4_1_3-unixsrc.orig/unix/configure.in vnc-4_1_3-unixsrc/unix/configure.in
+--- vnc-4_1_3-unixsrc.orig/unix/configure.in	2009-07-27 12:09:24.000000000 +0200
++++ vnc-4_1_3-unixsrc/unix/configure.in	2009-07-27 12:10:12.000000000 +0200
+@@ -77,6 +77,11 @@
+ 
+ AC_SUBST(USE_FB)
+ 
++AC_CHECK_LIB(Xinerama, XineramaIsActive,
++       [ AC_DEFINE(HAVE_XINERAMA, 1, [Define if you have Xinerama support])
++         X_PRE_LIBS="$X_PRE_LIBS -lXinerama"
++       ],, $X_PRE_LIBS $X_LIBS -lX11 -lXext $X_EXTRA_LIBS)
++
+ BOILERPLATE=boilerplate.mk
+ 
+ if (sh -c "make --version" 2>/dev/null | grep GNU 2>&1 >/dev/null); then
+Pliki vnc-4_1_3-unixsrc.orig/unix/vncviewer/buildtime.o i vnc-4_1_3-unixsrc/unix/vncviewer/buildtime.o ró¿ni± siê
+diff -urN vnc-4_1_3-unixsrc.orig/unix/vncviewer/CConn.cxx vnc-4_1_3-unixsrc/unix/vncviewer/CConn.cxx
+--- vnc-4_1_3-unixsrc.orig/unix/vncviewer/CConn.cxx	2009-07-27 12:09:24.000000000 +0200
++++ vnc-4_1_3-unixsrc/unix/vncviewer/CConn.cxx	2009-07-27 11:53:17.000000000 +0200
+@@ -40,6 +40,10 @@
+ #include <string>
+ #include <iostream>
+ 
++#ifdef HAVE_XINERAMA
++#   include <X11/extensions/Xinerama.h>
++#endif
++
+ using namespace rfb;
+ 
+ static rfb::LogWriter vlog("CConn");
+@@ -52,7 +56,7 @@
+ StringParameter windowName("name", "The X window name", "");
+ 
+ CConn::CConn(Display* dpy_, int argc_, char** argv_, network::Socket* sock_,
+-             char* vncServerName, bool reverse)
++             char* vncServerName, bool reverse, int xineramascreen)
+   : dpy(dpy_), argc(argc_),
+     argv(argv_), serverHost(0), serverPort(0), sock(sock_), viewport(0),
+     desktop(0), desktopEventHandler(0),
+@@ -66,7 +70,7 @@
+ {
+   CharArray menuKeyStr(menuKey.getData());
+   menuKeysym = XStringToKeysym(menuKeyStr.buf);
+-
++  xineramaScreen = xineramascreen;
+   setShared(shared);
+   addSecType(secTypeNone);
+   addSecType(secTypeVncAuth);
+@@ -591,7 +595,9 @@
+   if (fullScreen) {
+     XGrabKeyboard(dpy, desktop->win(), True, GrabModeAsync, GrabModeAsync,
+                   CurrentTime);
++    desktop->setGrabKeyboard(true);
+   } else {
++    desktop->setGrabKeyboard(false);
+     XUngrabKeyboard(dpy, CurrentTime);
+   }
+   if (oldViewport) delete oldViewport;
+@@ -602,6 +608,22 @@
+   const char * par = embedParent.getValueStr();
+   viewport->setMaxSize(cp.width, cp.height);
+   if (fullScreen) {
++#ifdef HAVE_XINERAMA
++    int number;
++    XineramaScreenInfo* info = XineramaQueryScreens (dpy, &number);
++    // Find requested Xinerama screen
++    for (int i = 0; (info != NULL) && (i < number); i++) {
++      // Setup window to match found Xinerama screen
++      if (info[i].screen_number == xineramaScreen) {
++        viewport->setUSPosition(info[i].x_org, info[i].y_org);
++        viewport->resize(info[i].width, info[i].height);
++        XFree(info);
++        return;
++      }
++    }
++    XFree(info);
++#endif
++    // No Xinerama screen found, or none requested, fill default display
+     viewport->resize(DisplayWidth(dpy,DefaultScreen(dpy)),
+                      DisplayHeight(dpy,DefaultScreen(dpy)));
+  } else if (strlen(par) != 0) {
+diff -urN vnc-4_1_3-unixsrc.orig/unix/vncviewer/CConn.h vnc-4_1_3-unixsrc/unix/vncviewer/CConn.h
+--- vnc-4_1_3-unixsrc.orig/unix/vncviewer/CConn.h	2009-07-27 12:09:24.000000000 +0200
++++ vnc-4_1_3-unixsrc/unix/vncviewer/CConn.h	2009-07-27 11:53:35.000000000 +0200
+@@ -48,7 +48,7 @@
+ public:
+ 
+   CConn(Display* dpy_, int argc_, char** argv_, network::Socket* sock_,
+-        char* vncServerName, bool reverse=false);
++        char* vncServerName, bool reverse=false, int xineramascreen=-1);
+   ~CConn();
+ 
+   // TXDeleteWindowCallback methods
+@@ -118,6 +118,7 @@
+   bool fullScreen;
+   bool ctrlDown;
+   bool altDown;
++  int xineramaScreen;
+   KeySym menuKeysym;
+   TXMenu menu;
+   TXEventHandler* menuEventHandler;
+diff -urN vnc-4_1_3-unixsrc.orig/unix/vncviewer/DesktopWindow.cxx vnc-4_1_3-unixsrc/unix/vncviewer/DesktopWindow.cxx
+--- vnc-4_1_3-unixsrc.orig/unix/vncviewer/DesktopWindow.cxx	2009-07-27 12:09:24.000000000 +0200
++++ vnc-4_1_3-unixsrc/unix/vncviewer/DesktopWindow.cxx	2009-07-27 11:52:44.000000000 +0200
+@@ -74,6 +74,7 @@
+     lastButtonMask(0)
+ {
+   setEventHandler(this);
++  grabkeys = false;
+   gc = XCreateGC(dpy, win(), 0, 0);
+   addEventMask(ExposureMask | ButtonPressMask | ButtonReleaseMask |
+                PointerMotionMask | KeyPressMask | KeyReleaseMask |
+@@ -423,6 +424,11 @@
+       XConvertSelection(dpy, xaCLIPBOARD, xaTIMESTAMP, xaSELECTION_TIME,
+                         win(), ev->xcrossing.time);
+     }
++    // Grab keyboard
++    if (grabkeys) {
++      XGrabKeyboard(dpy, win(), True, GrabModeAsync, GrabModeAsync,
++                  CurrentTime);
++    }
+     break;
+ 
+   case LeaveNotify:
+@@ -434,6 +440,7 @@
+       ownSelection(xaCLIPBOARD, ev->xcrossing.time);
+       currentSelectionTime = ev->xcrossing.time;
+     }
++
+     // Release all keys - this should probably done on a FocusOut event, but
+     // LeaveNotify is near enough...
+     for (int i = 8; i < 256; i++) {
+@@ -442,6 +449,10 @@
+         downKeysym[i] = 0;
+       }
+     }
++    // Release keyboard
++    if (grabkeys) {
++      XUngrabKeyboard (dpy, CurrentTime); 
++    }
+     break;
+   }
+ }
+diff -urN vnc-4_1_3-unixsrc.orig/unix/vncviewer/DesktopWindow.h vnc-4_1_3-unixsrc/unix/vncviewer/DesktopWindow.h
+--- vnc-4_1_3-unixsrc.orig/unix/vncviewer/DesktopWindow.h	2009-07-27 12:09:24.000000000 +0200
++++ vnc-4_1_3-unixsrc/unix/vncviewer/DesktopWindow.h	2009-07-27 11:52:44.000000000 +0200
+@@ -52,6 +52,11 @@
+ 
+   // resetLocalCursor() stops the rendering of the local cursor
+   void resetLocalCursor();
++  
++  // If set, the keyboard focus will be grabbed/released when the pointer
++  // enters/leaves the window. The window manager will take car of the
++  // keyboard focus is unset.
++  void setGrabKeyboard(bool grab) {grabkeys = grab;}
+ 
+   // Methods forwarded from CConn
+   void setColourMapEntries(int firstColour, int nColours, rdr::U16* rgbs);
+@@ -117,6 +122,7 @@
+   bool gettingInitialSelectionTime;
+   bool newServerCutText;
+   char* serverCutText_;
++  bool grabkeys;
+ 
+   rfb::Timer setColourMapEntriesTimer;
+   TXViewport* viewport;
+diff -urN vnc-4_1_3-unixsrc.orig/unix/vncviewer/vncviewer.cxx vnc-4_1_3-unixsrc/unix/vncviewer/vncviewer.cxx
+--- vnc-4_1_3-unixsrc.orig/unix/vncviewer/vncviewer.cxx	2009-07-27 12:09:24.000000000 +0200
++++ vnc-4_1_3-unixsrc/unix/vncviewer/vncviewer.cxx	2009-07-27 11:54:22.000000000 +0200
+@@ -103,6 +103,12 @@
+ /* Support for reparenting */
+ StringParameter embedParent("Parent", "X Window to use as a parent", "");
+ 
++#ifdef HAVE_XINERAMA
++IntParameter xineramaScreen("XineramaScreen", "Xineramascreen used in fullscreen", -1);
++#else
++static int xineramaScreen=-1;
++#endif
++
+ char aboutText[256];
+ char* programName;
+ extern char buildtime[];
+@@ -312,7 +318,7 @@
+ 
+     TXWindow::init(dpy, "Vncviewer");
+     xloginIconifier.iconify(dpy);
+-    CConn cc(dpy, argc, argv, sock, vncServerName, listenMode);
++    CConn cc(dpy, argc, argv, sock, vncServerName, listenMode, xineramaScreen);
+ 
+     // X events are processed whenever reading from the socket would block.
+ 
+Pliki vnc-4_1_3-unixsrc.orig/unix/vncviewer/vncviewer.o i vnc-4_1_3-unixsrc/unix/vncviewer/vncviewer.o ró¿ni± siê
